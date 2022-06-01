@@ -16,7 +16,7 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("Yelab2020/Cottrazm")
 ```
 
-## Documentation
+## Usage
 
-For usage of Cottrazm, please refer to the [documentation](doc/my-vignette.pdf)
+For usage of Cottrazm, please refer to the [vignette](doc/my-vignette.pdf)
 
