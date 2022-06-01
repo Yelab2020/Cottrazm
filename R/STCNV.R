@@ -12,6 +12,7 @@
 #' @param TumorST A Seurat object with morphological adjusted expression matrix and determined clusters
 #' @param OutDir Path to file save infercnv results
 #' @param assay The name of assay used in InferCNV (Morph: Morphological adjusted gene expression, Spatial: gene expression)
+#' @param Sample Name of your sample
 #'
 #' @return A large CNV object
 #' @export
@@ -26,6 +27,7 @@
 
 STCNV <- function(TumorST = TumorST,
                   assay = c("Morph","Spatial"),
+                  Sample = Sample,
                   OutDir = NULL){
 
   if (is.null(OutDir) == TRUE){
