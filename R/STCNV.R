@@ -23,7 +23,7 @@
 #' OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
 #' TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = 1.5)
-#' STInferCNV <- STCNV(TumorST = TumorST,OutDir = OutDir,assay = "Spatial")
+#' STInferCNV <- STCNV(TumorST = TumorST,OutDir = OutDir, Sample = Sample, assay = "Spatial")
 
 STCNV <- function(TumorST = TumorST,
                   assay = c("Morph","Spatial"),
