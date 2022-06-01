@@ -1,19 +1,19 @@
-# source('R/recon_spatial_TME_settings.R')
-# TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
+# source('R/spatial_recon_settings.R')
+# TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 # assay = "Spaital"
 
 #' Title Find differential expressed genes
 #'
-#' Find differential expressed genes in tumor, transition, and out spots
+#' Find differential expressed genes in malignant (Mal) spots, boundary (Bdy) spots, and  non-malignant (nMal) spots
 #'
-#' @param TumorST A Seurat object with defined tumor spots, transition zone spots, and out spots
+#' @param TumorST A Seurat object with defined  malignant (Mal) spots, boundary (Bdy) spots, and  non-malignant (nMal) spots
 #' @param assay The name of assay used to find DEG (Morph: Morphological adjusted gene expression, Spatial: gene expression)
 #'
-#' @return A list of data frame contain differential expressed genes and its p-value, log2FC and adjusted p value in tumor, transition zone and out spots
+#' @return A list of data frame contain differential expressed genes, p-value, log2FC and adjusted p value in Mal, Bdy, and nMal spots
 #' @export
 #'
 #' @examples
-#' TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
+#' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 #' assay = "Spatial"
 #' DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = assay)
 #'

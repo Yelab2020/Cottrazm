@@ -7,18 +7,18 @@
 FindDiffGenes(TumorST = TumorST, assay = c("Morph", "Spatial"))
 }
 \arguments{
-\item{TumorST}{A Seurat object with defined tumor spots, transition zone spots, and out spots}
+\item{TumorST}{A Seurat object with defined  malignant (Mal) spots, boundary (Bdy) spots, and  non-malignant (nMal) spots}
 
 \item{assay}{The name of assay used to find DEG (Morph: Morphological adjusted gene expression, Spatial: gene expression)}
 }
 \value{
-A list of data frame contain differential expressed genes and its p-value, log2FC and adjusted p value in tumor, transition zone and out spots
+A list of data frame contain differential expressed genes, p-value, log2FC and adjusted p value in Mal, Bdy, and nMal spots
 }
 \description{
-Find differential expressed genes in tumor, transition, and out spots
+Find differential expressed genes in malignant (Mal) spots, boundary (Bdy) spots, and  non-malignant (nMal) spots
 }
 \examples{
-TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
+TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 assay = "Spatial"
 DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = assay)
 

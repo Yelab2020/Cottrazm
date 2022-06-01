@@ -2,33 +2,33 @@
 % Please edit documentation in R/FeatureEnrichment.R
 \name{FeatureEnrichment}
 \alias{FeatureEnrichment}
-\title{Title Enrichment analysis of features of transition location}
+\title{Title Enrichment analysis of features of different locations}
 \usage{
 FeatureEnrichment(
   DiffGenes = DiffGenes,
   cut_off_logFC = 0.25,
   cut_off_pvalue = 0.05,
-  Location = c("Trans", "Tumor", "OutSpots")
+  Location = c("Bdy", "Mal", "nMal")
 )
 }
 \arguments{
-\item{DiffGenes}{A list of dataframe contain differential expressed genes and its p value, log2FC and adjusted p value in tumor, transition zone and outspots}
+\item{DiffGenes}{A list of data frame contain differential expressed genes, p value, log2FC and adjusted p value in Mal, Bdy and nMal spots}
 
 \item{cut_off_logFC}{Cut off of log2FC, features log2FC > cut_off_logFC will be selected as significant}
 
 \item{cut_off_pvalue}{Cut off of p value, features p value < cut_off_pvalue will be selected as significant}
 
-\item{Location}{Names of transition Location to analyse feature enrichment.}
+\item{Location}{Names of location to analyse feature enrichment.}
 }
 \value{
-A tibble data frame contain KEGG and GO enrichment result
+A tibble contain KEGG and GO enrichment result
 }
 \description{
-Use differentially expressed genes of transition location to find the KEGG and GO pathway these locations DEG enriched.
+Use differential expressed genes of location to define the KEGG and GO pathway these DEG enriched.
 }
 \examples{
-TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
+TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = "Spatial")
-TransFeatureEnrich <- FeatureEnrichment(DiffGenes = DiffGenes, cut_off_logFC = 0.25, cut_off_pvalue = 0.05, Location = "Trans")
+BdyFeatureEnrich <- FeatureEnrichment(DiffGenes = DiffGenes, cut_off_logFC = 0.25, cut_off_pvalue = 0.05, Location = "Bdy")
 
 }

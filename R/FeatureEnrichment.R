@@ -1,28 +1,28 @@
-# source('R/recon_spatial_TME_settings.R')
-# TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
+# source('R/spatial_recon_settings.R')
+# TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 # DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = "Spatial")
 
-#' Title Enrichment analysis of features of transition location
+#' Title Enrichment analysis of features of different locations
 #'
-#' Use differentially expressed genes of transition location to find the KEGG and GO pathway these locations DEG enriched.
+#' Use differential expressed genes of location to define the KEGG and GO pathway these DEG enriched.
 #'
-#' @param DiffGenes A list of dataframe contain differential expressed genes and its p value, log2FC and adjusted p value in tumor, transition zone and outspots
+#' @param DiffGenes A list of data frame contain differential expressed genes, p value, log2FC and adjusted p value in Mal, Bdy and nMal spots
 #' @param cut_off_logFC Cut off of log2FC, features log2FC > cut_off_logFC will be selected as significant
 #' @param cut_off_pvalue Cut off of p value, features p value < cut_off_pvalue will be selected as significant
-#' @param Location Names of transition Location to analyse feature enrichment.
+#' @param Location Names of location to analyse feature enrichment.
 #'
-#' @return A tibble data frame contain KEGG and GO enrichment result
+#' @return A tibble contain KEGG and GO enrichment result
 #' @export
 #'
 #' @examples
-#' TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
+#' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 #' DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = "Spatial")
-#' TransFeatureEnrich <- FeatureEnrichment(DiffGenes = DiffGenes, cut_off_logFC = 0.25, cut_off_pvalue = 0.05, Location = "Trans")
+#' BdyFeatureEnrich <- FeatureEnrichment(DiffGenes = DiffGenes, cut_off_logFC = 0.25, cut_off_pvalue = 0.05, Location = "Bdy")
 #'
 FeatureEnrichment <- function(DiffGenes = DiffGenes,
                                cut_off_logFC = 0.25,
                                cut_off_pvalue = 0.05,
-                               Location = c("Trans","Tumor","OutSpots")){
+                               Location = c("Bdy","Mal","nMal")){
 
   #get DiffGeneSig
   DiffGenesSig <- lapply(DiffGenes,function(sub){

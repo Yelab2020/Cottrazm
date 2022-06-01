@@ -21,7 +21,7 @@ get_sig_exp(
 A matrix features as row, scRNAseq cell types as column
 }
 \description{
-Get mean expression of scRNA-seq significant features across each cell type
+Get mean expression of scRNAseq significant features across each cell type
 }
 \examples{
 

@@ -22,7 +22,7 @@ read ST raw data and quality control
 \examples{
 InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 Sample = "CRC1"
-OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
 
 }

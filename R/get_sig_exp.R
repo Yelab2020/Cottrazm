@@ -1,6 +1,6 @@
 #' Title Get the mean expression of significant features across scRNAseq cell types
 #'
-#' Get mean expression of scRNA-seq significant features across each cell type
+#' Get mean expression of scRNAseq significant features across each cell type
 #'
 #' @param se.obj A scRNAseq Seurat object of corresponding tissue
 #' @param DefineTypes The column in scRNAseq Surat object metadata: cell types defined in scRNAseq data (usually including: T, B, Myeloid cells, Fibroblast cells, Endothelial cells, Malignant cells, Adjacent normal cells and .etc)
@@ -22,6 +22,6 @@ get_sig_exp <- function(se.obj = WholeTissueSC,
   for (i in unique(id)){
     Sig_exp<-cbind(Sig_exp,(apply(ExprSubset,1,function(y) mean(y[which(id==i)]))))
   }
-  colnames(Sig_exp)<-unique(id) #mean expression of every cell type
+  colnames(Sig_exp)<-unique(id) #mean expression of each cell type
   return(Sig_exp)
 }

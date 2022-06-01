@@ -1,29 +1,27 @@
-#source('R/transition_define_settings.R')
-#InDir = system.file("extdata/outs",package = "Cottrazm")
+#source('R/boundary_define_settings.R')
+#InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 #Sample = "CRC1"
-#OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
-#res = 1.5
-#TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = res)
+#TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = 1.5)
 
 #' Title ST data InferCNV
 #'
-#' Run infercnv of clustered seurat object of tumor ST data
+#' Run infercnv of clustered Seurat object of tumor ST data
 #'
 #' @param TumorST A Seurat object with morphological adjusted expression matrix and determined clusters
 #' @param OutDir Path to file save infercnv results
-#' @param assay The name of assay used in InferCNV (Morph: Morphological adjusted gene expression,Spatial: gene expression)
+#' @param assay The name of assay used in InferCNV (Morph: Morphological adjusted gene expression, Spatial: gene expression)
 #'
 #' @return A large CNV object
 #' @export
 #'
 #' @examples
-#' InDir = system.file("extdata/outs",package = "Cottrazm")
+#' InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 #' Sample = "CRC1"
-#' OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#' OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
-#' res = 1.5
-#' TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = res)
+#' TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = 1.5)
 #' STInferCNV <- STCNV(TumorST = TumorST,OutDir = OutDir,assay = "Spatial")
 
 STCNV <- function(TumorST = TumorST,
@@ -42,11 +40,11 @@ STCNV <- function(TumorST = TumorST,
   #Creat infercnv objcter
   annotation_file = paste(OutDir,"InferCNV/CellAnnotation.txt",sep = "")
 
-  Normalcluster = levels(TumorST$seurat_clusters)[order(unlist(lapply(split(TumorST@meta.data[,c("seurat_clusters","NormalScore")],
+  NormalCluster = levels(TumorST$seurat_clusters)[order(unlist(lapply(split(TumorST@meta.data[,c("seurat_clusters","NormalScore")],
                                                                             TumorST@meta.data[,c("seurat_clusters","NormalScore")]$seurat_clusters),
                                                                       function(test)mean(test$NormalScore))),decreasing = T)[1]]
 
-  ref_cluster = Normalcluster
+  ref_cluster = NormalCluster
   gene_order_file = system.file("extdata/gencode_v38_gene_pos.txt",package = "Cottrazm")
 
   infercnv_obj <- CreateInfercnvObject(raw_counts_matrix = matrix,

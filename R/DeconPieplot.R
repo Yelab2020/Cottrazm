@@ -1,32 +1,32 @@
-# source('R/spatial_dwls_settings.R')
-# TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
-# DeconData <- read.table(system.file("extdata/DeconData.csv",package = "Cottrazm"),sep = ",",header = T,row.names = "X")
+# source('R/spatial_decon_settings.R')
+# TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+# DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
 # plot_col <- colnames(DeconData)[2:ncol(DeconData)]
-# img_path = system.file("extdata/out/spatial/tissue_lowres_image.png",package = "Cottrazm")
+# img_path = system.file("extdata/outs/spatial/tissue_lowres_image.png",package = "Cottrazm")
 # pie_scale = 0.4
 # scatterpie_alpha = 0.8
 # border_color = "grey"
 
-#' Title Pieplot of deconvolution result
+#' Title Pie plot of deconvolution result
 #'
-#' Pieplot of deconvolution result
+#' Pie plot of deconvolution result
 #'
 #' @param DeconData A data frame of deconvolution result of each spatial spot
-#' @param TumorST A Seurat object with defined tumor spots, transition zone spots, and out spots
+#' @param TumorST A Seurat object with defined malignant (Mal) spots, boundary (Bdy) spots, and non-malignnat (nMal) spots
 #' @param plot_col Names of cell types to plot
 #' @param img_path Path to tissue_lowers_image.jpg in Spaceranger output file
 #' @param pie_scale Size of spot in pie plot
 #' @param scatterpie_alpha Transparency of spot in pie plot
-#' @param border_color Color of border in pieplot
+#' @param border_color Color of border in pie plot
 #'
 #' @return A ggplot object each pie represented a ST spot, each part of the pie represent the percentage of cell types infiltrated in the ST spot
 #' @export
 #'
 #' @examples
-#'TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
-#'DeconData <- read.table(system.file("extdata/DeconData.csv",package = "Cottrazm"),sep = ",",header = T,row.names = "X")
+#'TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+#'DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
 #'plot_col <- colnames(DeconData)[2:ncol(DeconData)]
-#'img_path = system.file("extdata/out/spatial/tissue_lowres_image.png",package = "Cottrazm")
+#'img_path = system.file("extdata/outs/spatial/tissue_lowres_image.png",package = "Cottrazm")
 #'DeconPieplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col, img_path = img_path, pie_scale = 0.4, scatterpie_alpha = 0.8, border_color = "grey")
 #'
 DeconPieplot <- function(DeconData = DeconData,

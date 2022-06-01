@@ -1,28 +1,28 @@
-#source('R/transition_define_settings.R')
+#source('R/boundary_define_settings.R')
 #infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
 #cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"))
-#TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTClustered.rds.gz")
-#OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
+#OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #Sample = "CRC1"
 
 #' Title Score ST data with infercnv result
 #'
-#' add cnv score to ST seurat object
+#' add cnv score to ST Seurat object
 #'
-#' @param infercnv.dend InferCNV random tree subclustered result of ST data
+#' @param infercnv.dend InferCNV random tree sub-clustered result of ST data
 #' @param cnv_table CNV scores of observations in ST data
 #' @param TumorST A Seurat object with morphological adjusted expression matrix and determined clusters
 #' @param OutDir Path to file save figures and processed data
 #' @param Sample Name of your sample
 #'
-#' @return A Seurat object of ST data with CNV subclusters and CNV scroes
+#' @return A Seurat object of ST data with CNV sub-clusters and CNV scores
 #' @export
 #'
 #' @examples
 #' infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
 #' cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"))
-#' TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTClustered.rds.gz")
-#' OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
+#' OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' Sample = "CRC1"
 #' TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir,Sample = Sample)
 

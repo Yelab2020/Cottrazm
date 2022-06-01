@@ -6,16 +6,16 @@
 \usage{
 DiffVolcanoplot(
   DiffGenes = DiffGenes,
-  Location = c("Tumor", "Trans", "OutSpots"),
+  Location = c("Mal", "Bdy", "nMal"),
   cut_off_pvalue = 2,
   cut_off_logFC = 0.25,
-  n = 10
+  n = NULL
 )
 }
 \arguments{
-\item{DiffGenes}{A list of data frame contain differential expressed genes and its p value, log2FC and adjusted p value in tumor, transition zone and out spots}
+\item{DiffGenes}{A list of data frame contain differential expressed genes, p value, log2FC and adjusted p value in Mal, Bdy and nMal spots}
 
-\item{Location}{Name in transition defined ST data ("Tumor","Trans","OutSpots")}
+\item{Location}{Name in location defined ST data (Mal, Bdy, and nMal)}
 
 \item{cut_off_pvalue}{Cut off of p value, features p value < 10^(-cut_off_pvalue) will be selected as significant}
 
@@ -27,11 +27,11 @@ DiffVolcanoplot(
 A ggplot object
 }
 \description{
-Draw a volcano plot of features in transition defined ST data
+Draw a volcano plot of features in boundary defined ST data
 }
 \examples{
-TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
-DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = "Morph")
-DiffVolcanoplot(DiffGenes = DiffGenes, Location = "Trans", cut_off_pvalue = 2, cut_off_logFC = 0.25, n = 10)
+TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = "Spatial")
+DiffVolcanoplot(DiffGenes = DiffGenes, Location = "Bdy", cut_off_pvalue = 2, cut_off_logFC = 0.25, n = 10)
 
 }

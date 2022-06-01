@@ -1,5 +1,5 @@
-# source('R/spatial_dwls_settings.R')
-# TumorST <- readr::read_rds("YourPath/TumorTransition/Fig/1.TransitionDefine/SampleName/Spatial/TumorST_TransitionDefine.rds.gz")
+# source('R/spatial_decon_settings.R')
+# TumorST <- readr::read_rds("YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 # sig_exp <- readr::read_rds("YourPath/sig_exp.rds.gz")
 # clustermarkers_list <- readr::read_rds("YourPath/clustermarkers_list.rds.gz")
 #

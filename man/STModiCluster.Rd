@@ -30,10 +30,9 @@ A Seurat object with morphological adjusted expression matrix and determined clu
 Grep HE staining information as Morphological matrix to adjusted gene expression matrix and use adjusted assay to cluster ST data
 }
 \examples{
-InDir = system.file("extdata/outs",package = "Cottrazm")
+InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 Sample = "CRC1"
-OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
-res = 1.5
-TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = res)
+TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = 1.5)
 }

@@ -133,12 +133,12 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
 ){
 
   ####select  cell types####
-  #select topic from modul score
+  #select topic from module score
   topic = meta_data$Decon_topics
-  topic_sort<-sort(unique(topic)) #clusters of Decon_seuart as topic
+  topic_sort<-sort(unique(topic))
 
-  #signature score cutoff and signatrue score selected cell types
-  ct_enrichig <- lapply(names(clustermarkers_list),function(cluster){
+  #signature score cutoff and signature score selected cell types
+  ct_sig0 <- lapply(names(clustermarkers_list),function(cluster){
     cutoff_sig = quantile(meta_data[,cluster],0.75)
     test <- as.data.frame(do.call(rbind,lapply(topic_sort,function(topic) {
       topic_qun = median(meta_data[meta_data$Decon_topics == topic,][,cluster])
@@ -148,7 +148,7 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
     return(ct)
   })
 
-  names(ct_enrichig) <- names(clustermarkers_list)
+  names(ct_sig0) <- names(clustermarkers_list)
 
   #calculate enrichment scroe cutoff
   cutoff_enrich = lapply(rownames(enrich_result), function(cluster){
@@ -166,10 +166,10 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
   #start select cell type of each decon-topic and initial deconvolution
   for (i in 1:length(topic_sort)){
 
-    #cluster score ct
+    #signature score ct
     ct_sig <- c()
     for(cluster in names(clustermarkers_list)){
-      if (topic_sort[i] %in% ct_enrichig[[cluster]]) {ct_sig <- c(ct_sig,cluster)}
+      if (topic_sort[i] %in% ct_sig0[[cluster]]) {ct_sig <- c(ct_sig,cluster)}
     }
 
     #split enrich result of topic i
@@ -200,13 +200,12 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
 
     }
 
-    #ct = 0
     if (length(ct) == 0){
       ct <- names(sort(row_i_max - cutoff_enrich,decreasing = T))[1:2]
 
     }
 
-    #incase tissue/marlignant cluster cover change/expression of other cluster (except for low feature clusters)
+    #in case tissue/malignant cluster cover change/expression of other cluster (except for low feature clusters)
     if (malignant_cluster %in% ct | tissue_cluster %in% ct){
 
       ct_add <- names(sort(row_i_max - cutoff_enrich,decreasing = T)[1:3])
@@ -214,8 +213,8 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
 
     }
 
-    if (unlist(strsplit(topic_sort[i],"_"))[1] == "Tumor"){ct <- unique(c(ct,malignant_cluster))}
-    if (median(meta_data[meta_data$Decon_topics == topic_sort[i],]$nCount_Spaital) < 5000 ){ct <- unique(c(ct,stromal_cluster))}
+    if (unlist(strsplit(topic_sort[i],"_"))[1] == "Mal"){ct <- unique(c(ct,malignant_cluster))}
+    if (median(meta_data[meta_data$Decon_topics == topic_sort[i],]$nCount_Spatial) < 5000 ){ct <- unique(c(ct,stromal_cluster))}
 
     #na.omit and print-check
     ct <- as.character(na.omit(ct))
@@ -229,9 +228,9 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
       ct_gene<-c(ct_gene,sig_gene_j)
     }
 
-    #interset sc cluster unique gene with st filter expr
+    #intersect sc cluster unique gene with st filter expr
     uniq_ct_gene<-intersect(unique(ct_gene),rownames(filter_expr))
-    select_enrichig_exp<-as.matrix(filter_sig[uniq_ct_gene,ct]) #select  sc  cluster mean ref
+    select_enrichig_exp<-as.matrix(filter_sig[uniq_ct_gene,ct]) #select sc cluster mean ref
     cluster_i_cell<-which(topic == topic_sort[i])
     cluster_cell_exp<-as.matrix(filter_expr[uniq_ct_gene,cluster_i_cell]) #spots in topic-i; genes from sc contribute to topic-i
 
@@ -242,7 +241,7 @@ spot_proportion_initial <- function(enrich_matrix = enrich_matrix,
   #####remove negative values
   for (i in dim(dwls_results)[1]){
     negtive_index<-which(dwls_results[i,]<0)
-    dwls_results[i,negtive_index] = 0
+    dwls_results[i,negtive_index] <-  0
   }
 
   return(dwls_results)

@@ -17,16 +17,16 @@ get_feature_weight <- function(filter_sig = filter_sig){
 
 
 #title: get_obs
-#function: get each trans spot deconvolution data
+#function: get each Boundary spot deconvolution data
 get_obs <- function(DeconData = DeconData,obs_ID = SubID){
   obs <- tibble::tibble(cell_ID = DeconData[DeconData$cell_ID %in% obs_ID,]$cell_ID) %>%
     dplyr::mutate(Decon = purrr::map(.x = cell_ID,.f = function(.x){
-      sub_Deno <- DeconData[DeconData$cell_ID == .x,][,2:ncol(DeconData)]
-      sub_DenoF <- as.data.frame(sub_Deno[,colnames(sub_Deno)[which(sub_Deno >0)]])
-      if(ncol(sub_DenoF) == 1){
-        colnames(sub_DenoF) <- colnames(sub_Deno)[which(sub_Deno >0)]
+      sub_Decon <- DeconData[DeconData$cell_ID == .x,][,2:ncol(DeconData)]
+      sub_DeconF <- as.data.frame(sub_Decon[,colnames(sub_Decon)[which(sub_Decon >0)]])
+      if(ncol(sub_DeconF) == 1){
+        colnames(sub_DeconF) <- colnames(sub_Decon)[which(sub_Decon >0)]
       }
-      return(sub_DenoF)
+      return(sub_DeconF)
     }))
 
   return(obs)
@@ -35,7 +35,7 @@ get_obs <- function(DeconData = DeconData,obs_ID = SubID){
 
 
 #title:get_sub_mtx
-#function: from Trans_expr to sub_trans_expr
+#function: from Bdy_expr to sub_Bdy_expr
 get_recon_mtx <- function(TumorST = TumorST,
                        sig_exp = sig_exp,
                        clustermarkers_list = clustermarkers_list,

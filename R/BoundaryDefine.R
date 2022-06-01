@@ -1,37 +1,37 @@
-#source('R/transition_define_settings.R')
-#source('R/transition_define_utility.R')
+#source('R/boundary_define_settings.R')
+#source('R/boundary_define_utility.R')
 #infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
 #cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"v))
-#TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTClustered.rds.gz")
+#TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
 #Sample = "CRC1"
-#OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
-#TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir)
-#TumorLabel = c(1,2)
+#OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
+#TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir,Sample = Sample)
+#MalLabel = c(1,2)
 
-#' Title transition define
+#' Title Boundary define
 #'
-#' Find boudnary/transition zone of tumor in ST data
+#' Find boundary of tumor in ST data
 #'
 #' @param TumorST A Seurat object with morphological adjusted expression matrix and determined clusters
 #' @param OutDir Path to file save figures and processed data
 #' @param Sample Name of your sample
-#' @param TumorLabel CNV labels with high cnv scores which could be defined as tumor. If NULL, Cottrazm will take the two CNVLabels with the highest average CNVScores.
+#' @param MalLabel CNV labels with high cnv scores which could be defined as malignant label. If NULL, Cottrazm will take the two CNVLabels with the highest average CNVScores.
 #'
-#' @return A subset Seurat object of ST data with defined tumor, transition zone, and normal spots
+#' @return A subset Seurat object of ST data with defined malignant spots (Mal), boundary spots (Bdy), and non-malignant spots (nMal)
 #' @export
 #'
 #' @examples
-#' TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTClustered.rds.gz")
+#' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
 #' Sample = "CRC1"
-#' OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#' OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
 #' cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"))
-#' TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir)
-#' TumorLabel = c(1,2)
-#' TumorSTn <- TransitionDefine(TumorST = TumorST, TumorLabel = TumorLabel, OutDir = OutDir, Sample = Sample)
+#' TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir, Sample = Sample)
+#' MalLabel = c(1,2)
+#' TumorSTn <- BoundaryDefine(TumorST = TumorST, MalLabel = MalLabel, OutDir = OutDir, Sample = Sample)
 #'
-TransitionDefine <- function(TumorST = TumorST,
-                           TumorLabel = NULL,
+BoundaryDefine <- function(TumorST = TumorST,
+                           MalLabel = NULL,
                            OutDir = NULL,
                            Sample = Sample){
 
@@ -52,25 +52,25 @@ TransitionDefine <- function(TumorST = TumorST,
   df_j <- find_neighbors(position = position,radius = dists$radius,method = "manhattan")
   names(df_j) <- position$spot.ids
 
-  #set primiary tumorcellID by CNV
+  #set primiary MalCellID by CNV
   TumorST@meta.data$CNVLabel <- factor(TumorST@meta.data$CNVLabel,levels = c(1:8,"Normal"))
 
-  if (is.null(TumorLabel) == TRUE)
-    TumorLabel <-
+  if (is.null(MalLabel) == TRUE)
+    MalLabel <-
     order(unlist(lapply(split(TumorST@meta.data[, c("CNVLabel", "CNVScores")],
                               TumorST@meta.data[, c("CNVLabel", "CNVScores")]$CNVLabel),
                         function(test)
                           median(test$CNVScores))), decreasing = T)[1:2]
 
-  TumorCellID <- rownames(TumorST@meta.data[TumorST@meta.data$CNVLabel %in% TumorLabel,])
-  TumorSpotID <- position[TumorCellID,]$spot.ids
+  MalCellID <- rownames(TumorST@meta.data[TumorST@meta.data$CNVLabel %in% MalLabel,])
+  MalSpotID <- position[MalCellID,]$spot.ids
 
   NormalCellID <- rownames(TumorST@meta.data[TumorST@meta.data$CNVLabel == "Normal",])
   NormalSpotID <- position[rownames(position) %in% NormalCellID,]$spot.ids
 
-  #get better tumorcellID by umap position
-  #intergrate CNV tumor cluster and suerat TumorLabel
-  CNV_seurat_df <- as.data.frame.array(table(TumorST@meta.data$CNVLabel,TumorST@meta.data$seurat_clusters))[TumorLabel,]
+  #get better MalCellID by umap position
+  #integrate CNV MalLabel and Suerat Clusters
+  CNV_seurat_df <- as.data.frame.array(table(TumorST@meta.data$CNVLabel,TumorST@meta.data$seurat_clusters))[MalLabel,]
   ClusterID <- c()
   for(cluster in levels(TumorST@meta.data$seurat_clusters)){
     sub_cluster_colsum <- sum(CNV_seurat_df[,cluster])
@@ -79,103 +79,103 @@ TransitionDefine <- function(TumorST = TumorST,
     }
   }
 
-  #generate CiTumor tibble
-  CiTumor <- tibble::tibble(cluster= ClusterID)
-  CiTumor <- CiTumor %>% dplyr::mutate(sub_TumorCellID = purrr::map(.x = cluster,.f = function(.x){
-    sub_TumorCellID <- intersect(TumorCellID,rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == .x,]))
-    return(sub_TumorCellID)
-  })) %>% dplyr::mutate(sub_Citumor = purrr::map(.x = sub_TumorCellID,.f = function(.x){
-    sub_CiTumor <- apply(UMAPembeddings[.x,],2,mean)
-    return(sub_CiTumor)
+  #generate MalCluster tibble
+  CiMal <- tibble::tibble(cluster= ClusterID)
+  CiMal <- CiMal %>% dplyr::mutate(sub_MalCellID = purrr::map(.x = cluster,.f = function(.x){
+    sub_MalCellID <- intersect(MalCellID,rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == .x,]))
+    return(sub_MalCellID)
+  })) %>% dplyr::mutate(sub_CiMal = purrr::map(.x = sub_MalCellID,.f = function(.x){
+    sub_CiMal <- apply(UMAPembeddings[.x,],2,mean)
+    return(sub_CiMal)
   }))
 
   CiNormal <- apply(UMAPembeddings[NormalCellID,],2,mean)
 
-  TumorCellIDsi <- purrr::map2(.x = CiTumor$sub_TumorCellID,.y = CiTumor$sub_Citumor,function(.x,.y){
-    sub_TumorCellsi <- lapply(.x, function(id){
+  MalCellIDsi <- purrr::map2(.x = CiMal$sub_MalCellID,.y = CiMal$sub_CiMal,function(.x,.y){
+    sub_MalCellsi <- lapply(.x, function(id){
       pos <- UMAPembeddings[id,]
       rt <- sqrt(sum((pos-.y)^2))
       rn <- sqrt(sum((pos-CiNormal)^2))
       if(rt < 1/3 * rn){return(id)}
     }) %>% unlist()
-    return(sub_TumorCellsi)
+    return(sub_MalCellsi)
   }) %>% unlist()
-  #TumorCellIDsi <- TumorCellID
-  TumorSpotIDsi <- position[TumorCellIDsi,]$spot.ids
+  #MalCellIDsi <- MalCellID
+  MalSpotIDsi <- position[MalCellIDsi,]$spot.ids
 
   #deal with lonely spots
-  TumorSpotIDL <- lapply(TumorSpotIDsi, function(name){ifelse(length(df_j[[name]][df_j[[name]] %in% TumorSpotIDsi]) == 0, name, NA)}) %>% unlist() %>% na.omit()
-  TumorCellIDL <- rownames(position[position$spot.ids %in% TumorSpotIDL,])
+  MalSpotIDL <- lapply(MalSpotIDsi, function(name){ifelse(length(df_j[[name]][df_j[[name]] %in% MalSpotIDsi]) == 0, name, NA)}) %>% unlist() %>% na.omit()
+  MalCellIDL <- rownames(position[position$spot.ids %in% MalSpotIDL,])
 
-  TransCellID <- NULL
-  TransSpotID <- position[TransCellID,]$spot.ids
+  BdyCellID <- NULL
+  BdySpotID <- position[BdyCellID,]$spot.ids
 
-  nbrs_of_tumorL <- nbrs(df_j = df_j,TumorSpotIDAdd = TumorSpotIDL,SpotIDRaw = c(TumorSpotIDsi,NormalSpotID,TransSpotID))
-  ClusterL <- do.call(rbind,lapply(names(nbrs_of_tumorL),function(spotl){
+  nbrs_of_MalL <- nbrs(df_j = df_j,MalSpotIDAdd = MalSpotIDL,SpotIDRaw = c(MalSpotIDsi,NormalSpotID,BdySpotID))
+  ClusterL <- do.call(rbind,lapply(names(nbrs_of_MalL),function(spotl){
     sub <- TumorST@meta.data[rownames(position[position$spot.ids == spotl,]),]$seurat_clusters
-    nbrs_of_spotl <- rownames(position[position$spot.ids %in% nbrs_of_tumorL[[spotl]],])
+    nbrs_of_spotl <- rownames(position[position$spot.ids %in% nbrs_of_MalL[[spotl]],])
     cluster <- do.call(rbind,lapply(nbrs_of_spotl, function(idl){
       pos <- UMAPembeddings[idl,]
-      rt <- sqrt(sum((pos-unlist(CiTumor[CiTumor$cluster == sub,]$sub_Citumor))^2))
+      rt <- sqrt(sum((pos-unlist(CiMal[CiMal$cluster == sub,]$sub_CiMal))^2))
       rn <- sqrt(sum((pos-CiNormal)^2))
-      cluster <- data.frame(CellID = idl, Location= ifelse(rt < 1/3*rn, "Tumor","Trans"))
+      cluster <- data.frame(CellID = idl, Location= ifelse(rt < 1/3*rn, "Mal","Bdy"))
     }))
     return(cluster)
   }))
 
   ClusterL <- as.data.frame.array(table(ClusterL$CellID,ClusterL$Location))
   aa_try <- try(
-    aa <- as.character(lapply(rownames(ClusterL),function(spotID){ifelse(ClusterL[spotID,]$Tumor > 0,"Tumor","Trans")})),silent = T
+    aa <- as.character(lapply(rownames(ClusterL),function(spotID){ifelse(ClusterL[spotID,]$Mal > 0,"Mal","Bdy")})),silent = T
   )
   if(!is(aa_try,'try-error')){
     ClusterL$Location <- aa
   }else{
-    ClusterL$Location <- rep("Trans",nrow(ClusterL))
+    ClusterL$Location <- rep("Bdy",nrow(ClusterL))
   }
   ClusterL <- data.frame(CellID=rownames(ClusterL),Location=as.character(ClusterL$Location))
 
   #prepare initial IDs for repeat
-  TumorCellID <- c(TumorCellIDsi,ClusterL[ClusterL$Location == "Tumor",]$CellID)
-  TransCellID <- as.character(ClusterL[ClusterL$Location == "Trans",]$CellID)
-  TumorCellIDN <- TumorCellID
+  MalCellID <- c(MalCellIDsi,ClusterL[ClusterL$Location == "Mal",]$CellID)
+  BdyCellID <- as.character(ClusterL[ClusterL$Location == "Bdy",]$CellID)
+  MalCellIDN <- MalCellID
   n=1
   TumorSTn <- TumorST
   Clustern <- rbind(data.frame(CellID=NormalCellID,Location=rep("Normal",length(NormalCellID))),
-                    data.frame(CellID=TumorCellID,Location=rep("Tumor",length(TumorCellID))),
-                    data.frame(CellID=TransCellID,Location=rep("Trans",length(TransCellID))))
+                    data.frame(CellID=MalCellID,Location=rep("Mal",length(MalCellID))),
+                    data.frame(CellID=BdyCellID,Location=rep("Bdy",length(BdyCellID))))
   repeat {
 
-    if (length(TumorCellIDN) < 3){
+    if (length(MalCellIDN) < 3){
       print(paste("Stop at n = ",(n-1),sep = ""))
       return(TumorSTn)
 
     }else{
 
-      TransSpotID <- position[TransCellID,]$spot.ids
-      TumorSpotIDN <- position[TumorCellIDN,]$spot.ids
-      TumorSpotID <- position[TumorCellID,]$spot.ids
-      nbrs_of_tumor <- nbrs(df_j = df_j,TumorSpotIDAdd = TumorSpotIDN,SpotIDRaw = c(TumorSpotID,NormalSpotID,TransSpotID))
+      BdySpotID <- position[BdyCellID,]$spot.ids
+      MalSpotIDN <- position[MalCellIDN,]$spot.ids
+      MalSpotID <- position[MalCellID,]$spot.ids
+      nbrs_of_Mal <- nbrs(df_j = df_j,MalSpotIDAdd = MalSpotIDN,SpotIDRaw = c(MalSpotID,NormalSpotID,BdySpotID))
 
-      if(length(unique(unlist(nbrs_of_tumor))) < 3){
+      if(length(unique(unlist(nbrs_of_Mal))) < 3){
         print(paste("Stop at n = ",(n-1),sep = ""))
         return(TumorSTn)
 
       }else{
 
-        TumorSTn <- subset(TumorST,cells= c(rownames(position[position$spot.ids %in% unique(unlist(nbrs_of_tumor)),]),TumorCellID,NormalCellID,TransCellID))
+        TumorSTn <- subset(TumorST,cells= c(rownames(position[position$spot.ids %in% unique(unlist(nbrs_of_Mal)),]),MalCellID,NormalCellID,BdyCellID))
         TumorSTn@meta.data$Label <- Clustern$Location[match(rownames(TumorSTn@meta.data),Clustern$CellID)]
 
         ClusterAdd <- ClusterUpdate(x = n,
                                     position = position,
                                     df_j = df_j,
                                     UMAPembeddings = UMAPembeddings,
-                                    TumorCellIDN = TumorCellIDN,
-                                    TransCellID = TransCellID,
+                                    MalCellIDN = MalCellIDN,
+                                    BdyCellID = BdyCellID,
                                     NormalCellID = NormalCellID,
-                                    TumorCellID = TumorCellID)
+                                    MalCellID = MalCellID)
         Clustern <- rbind(Clustern,ClusterAdd)
         TumorSTn@meta.data$LabelNew <- Clustern$Location[match(rownames(TumorSTn@meta.data),as.character(Clustern$CellID))]
-        TumorSTn@meta.data$LabelNew <- factor(TumorSTn@meta.data$LabelNew,levels = c("Normal","Trans","Tumor",paste("Tumor",c(1:n),sep = "")))
+        TumorSTn@meta.data$LabelNew <- factor(TumorSTn@meta.data$LabelNew,levels = c("Normal","Bdy","Mal",paste("Mal",c(1:n),sep = "")))
 
 
         pdf(paste(OutDir,Sample,"_with_nbrs",n,".pdf",sep = ""),width = 7,height = 7)
@@ -201,16 +201,16 @@ TransitionDefine <- function(TumorST = TumorST,
         dev.off()
         readr::write_rds(TumorSTn,paste(OutDir,Sample,"_out_",n,".rds.gz",sep = ""),compress = "gz")
 
-        TumorCellID <- rownames(TumorSTn@meta.data[TumorSTn@meta.data$LabelNew %in% c("Tumor",paste("Tumor",c(1:n),sep = "")),])
-        TumorCellIDN <- rownames(TumorSTn@meta.data[TumorSTn@meta.data$LabelNew %in% paste("Tumor",n,sep = ""),])
-        TransCellID <- rownames(TumorSTn@meta.data[TumorSTn$LabelNew == "Trans",])
+        MalCellID <- rownames(TumorSTn@meta.data[TumorSTn@meta.data$LabelNew %in% c("Mal",paste("Mal",c(1:n),sep = "")),])
+        MalCellIDN <- rownames(TumorSTn@meta.data[TumorSTn@meta.data$LabelNew %in% paste("Mal",n,sep = ""),])
+        BdyCellID <- rownames(TumorSTn@meta.data[TumorSTn$LabelNew == "Bdy",])
 
         n <- n+1
 
       }
     }
-    if(n > 5){
-      print(paste("Stop at n = ",n,sep = ""))
+    if(n > 6){
+      print(paste("Stop at n = ",(n-1),sep = ""))
       return(TumorSTn)
 
     }

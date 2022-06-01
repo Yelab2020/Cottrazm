@@ -2,7 +2,7 @@
 % Please edit documentation in R/DeconPieplot.R
 \name{DeconPieplot}
 \alias{DeconPieplot}
-\title{Title Pieplot of deconvolution result}
+\title{Title Pie plot of deconvolution result}
 \usage{
 DeconPieplot(
   DeconData = DeconData,
@@ -17,7 +17,7 @@ DeconPieplot(
 \arguments{
 \item{DeconData}{A data frame of deconvolution result of each spatial spot}
 
-\item{TumorST}{A Seurat object with defined tumor spots, transition zone spots, and out spots}
+\item{TumorST}{A Seurat object with defined malignant (Mal) spots, boundary (Bdy) spots, and non-malignnat (nMal) spots}
 
 \item{plot_col}{Names of cell types to plot}
 
@@ -27,19 +27,19 @@ DeconPieplot(
 
 \item{scatterpie_alpha}{Transparency of spot in pie plot}
 
-\item{border_color}{Color of border in pieplot}
+\item{border_color}{Color of border in pie plot}
 }
 \value{
 A ggplot object each pie represented a ST spot, each part of the pie represent the percentage of cell types infiltrated in the ST spot
 }
 \description{
-Pieplot of deconvolution result
+Pie plot of deconvolution result
 }
 \examples{
-TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
-DeconData <- read.table(system.file("extdata/DeconData.csv",package = "Cottrazm"),sep = ",",header = T,row.names = "X")
+TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
 plot_col <- colnames(DeconData)[2:ncol(DeconData)]
-img_path = system.file("extdata/out/spatial/tissue_lowres_image.png",package = "Cottrazm")
+img_path = system.file("extdata/outs/spatial/tissue_lowres_image.png",package = "Cottrazm")
 DeconPieplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col, img_path = img_path, pie_scale = 0.4, scatterpie_alpha = 0.8, border_color = "grey")
 
 }

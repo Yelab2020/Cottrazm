@@ -1,9 +1,8 @@
-#source('R/transition_define_settings.R')
-#InDir = system.file("extdata/outs",package = "Cottrazm")
+#source('R/boundary_define_settings.R')
+#InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 #Sample = "CRC1"
-#OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
-#res = 1.5
 
 #' Title Morphological adjusted cluster determination
 #'
@@ -19,12 +18,11 @@
 #' @export
 #'
 #' @examples
-#' InDir = system.file("extdata/outs",package = "Cottrazm")
+#' InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 #' Sample = "CRC1"
-#' OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#' OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
-#' res = 1.5
-#' TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = res)
+#' TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = 1.5)
 
 STModiCluster <- function(InDir = InDir,
                           Sample = Sample,
@@ -38,7 +36,7 @@ STModiCluster <- function(InDir = InDir,
   }
 
   #Adjusted_expr_mtx
-  use_condaenv("TumorTransition", required = TRUE)
+  use_condaenv("TumorBoundary", required = TRUE)
   source_python(system.file("python/Rusedtile.py",package = "Cottrazm"))
   Adjusted_expr_mtx <- ME_normalize(inDir=InDir,outDir=OutDir,sample=Sample)
 
@@ -57,7 +55,7 @@ STModiCluster <- function(InDir = InDir,
   Adjusted_expr_mtxF <- t(as.matrix(Adjusted_expr_mtx))
   MorphMatirxSeurat <- CreateSeuratObject(counts = as.matrix(Adjusted_expr_mtxF))
 
-  #Add morph feature as assay tp TumorST
+  #Add morph feature as assay to TumorST
   MorphMatirxSeurat <- subset(MorphMatirxSeurat,cells = rownames(TumorST@meta.data))
   TumorST@assays$Morph <- MorphMatirxSeurat@assays$RNA
 

@@ -2,14 +2,14 @@
 % Please edit documentation in R/DeconBarplot.R
 \name{DeconBarplot}
 \alias{DeconBarplot}
-\title{Title Barplot of deconvolution result}
+\title{Title Bar plot of deconvolution result}
 \usage{
 DeconBarplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col)
 }
 \arguments{
 \item{DeconData}{A data frame of deconvolution result of each spatial spot}
 
-\item{TumorST}{A Seurat object with defined tumor spots, transition zone spots, and out spots}
+\item{TumorST}{A Seurat object with defined malignant (Mal) spots, boundary (Bdy) spots, and non-malignnat (nMal) spots}
 
 \item{plot_col}{Names of cell types to plot}
 }
@@ -17,11 +17,11 @@ DeconBarplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col)
 A ggplot object
 }
 \description{
-Barplot of deconvolution result in transition define groups
+Bar plot of deconvolution result in location groups
 }
 \examples{
-TumorST <- readr::read_rds("YourPath/TumorTransition/1.TransitionDefine/CRC1/TumorSTTransitionDefine.rds.gz")
-DeconData <- read.table(system.file("extdata/DeconData.csv",package = "Cottrazm"),sep = ",",header = T,row.names = "X")
+TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+DeconData <- oepnxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
 plot_col <- colnames(DeconData)[2:ncol(DeconData)]
 DeconBarplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col)
 

@@ -9,7 +9,7 @@ STCNV(TumorST = TumorST, assay = c("Morph", "Spatial"), OutDir = NULL)
 \arguments{
 \item{TumorST}{A Seurat object with morphological adjusted expression matrix and determined clusters}
 
-\item{assay}{The name of assay used in InferCNV (Morph: Morphological adjusted gene expression,Spatial: gene expression)}
+\item{assay}{The name of assay used in InferCNV (Morph: Morphological adjusted gene expression, Spatial: gene expression)}
 
 \item{OutDir}{Path to file save infercnv results}
 }
@@ -17,14 +17,13 @@ STCNV(TumorST = TumorST, assay = c("Morph", "Spatial"), OutDir = NULL)
 A large CNV object
 }
 \description{
-Run infercnv of clustered seurat object of tumor ST data
+Run infercnv of clustered Seurat object of tumor ST data
 }
 \examples{
-InDir = system.file("extdata/outs",package = "Cottrazm")
+InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 Sample = "CRC1"
-OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
-res = 1.5
-TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = res)
+TumorST <- STModiCluster(InDir = InDir,Sample = Sample,OutDir = OutDir,TumorST = TumorST, res = 1.5)
 STInferCNV <- STCNV(TumorST = TumorST,OutDir = OutDir,assay = "Spatial")
 }

@@ -204,24 +204,24 @@ pre code {
 <li><a href="#installation-and-requirement">2. Installation and requirement</a></li>
 <li><a href="#functional-modules">3. functional modules</a>
 <ul>
-<li><a href="#transition-define">3.1 Transition define</a>
+<li><a href="#delineation-of-tumor-boundary">3.1 Delineation of tumor boundary</a>
 <ul>
 <li><a href="#read-preprocessed-and-quality-control-of-tumor-st-data">3.1.1 Read, preprocessed and quality control of tumor ST data</a></li>
 <li><a href="#morphological-adjusted-cluster-determination">3.1.2 Morphological adjusted cluster determination</a></li>
 <li><a href="#run-infercnv-on-st-data">3.1.3 Run InferCNV on ST data</a></li>
-<li><a href="#define-of-tumor-transition">3.1.4 Define of tumor transition</a></li>
+<li><a href="#define-of-tumor-boundary">3.1.4 Define of tumor boundary</a></li>
 </ul></li>
-<li><a href="#spot-deconvolution">3.2 Spot Deconvolution</a>
+<li><a href="#deconvolution-for-each-spot">3.2 Deconvolution for each spot</a>
 <ul>
 <li><a href="#preporcess-of-scrnaseq-data">3.2.1 Preporcess of scRNAseq data</a></li>
 <li><a href="#enrichment-analysis-of-st-data">3.2.2 Enrichment analysis of ST data</a></li>
-<li><a href="#spot-deconvolution-1">3.2.3 Spot deconvolution</a></li>
+<li><a href="#spot-deconvolution">3.2.3 Spot deconvolution</a></li>
 <li><a href="#visualization">3.2.4 Visualization</a></li>
 </ul></li>
-<li><a href="#reconstruct-of-spatial-tumor-microenvironment">3.3 Reconstruct of spatial tumor microenvironment</a>
+<li><a href="#reconstruct-of-tumor-spatial-microencironment">3.3 Reconstruct of tumor spatial microencironment</a>
 <ul>
-<li><a href="#reconstruction-of-spatial-gene-expression-matrix-for-sub-spots">3.3.1 Reconstruction of spatial gene expression matrix for sub-spots</a></li>
-<li><a href="#differentially-expressed-genes-of-tumor-transition">3.3.2 Differentially expressed genes of tumor transition</a></li>
+<li><a href="#reconstruction-of-spatial-gene-expression-profile-of-scrnaseq-cell-types-for-sub-spots">3.3.1 Reconstruction of spatial gene expression profile of scRNAseq cell types for sub-spots</a></li>
+<li><a href="#differentially-expressed-genes-of-tumor-boundary">3.3.2 Differentially expressed genes of tumor Boundary</a></li>
 </ul></li>
 <li><a href="#summary">4. Summary</a></li>
 <li><a href="#session-information">5. Session information</a></li>
@@ -232,15 +232,15 @@ pre code {
 
 <div id="introduction" class="section level1">
 <h1>1. Introduction</h1>
-<p>Cottrazm is an R package to construct tumor transition zone microenvironment of spatial transcriptomic (ST) data.</p>
-<p>Conttrazm adjusted gene expression with morphological information,<span class="citation"><sup>1</sup></span> and based on morphological adjusted gene expression, Cottrazm applied InferCNV<span class="citation"><sup>2</sup></span> to recognize tumor spots. Then Cottrazm defined a cluster of spots spatially located close to tumor but with different morphology and gene expression pattern form tumor spots, this cluster of spots was defined as tumor transition. Next based on corresponding single cell sequencing (scRNAseq) data of tumor, by dampened weighted least squares (DWLS), a kind of deconvolution algorithm,<span class="citation"><sup>3</sup></span> Cottrazm calculated the possible proportion of each single cell types of each spatial spot, to further explore the character of tumor transition as well as tumor and other spots. Then according to deconvolution result, scRNAseq expression data, and ST expression data, Cottrazm applied a novel algorithm to reconstruct the ST feature expression at single cell level, to deeper exploring the microenvironment of tumor transition zone, including specific cells enriched in tumor transition and their differential expressed genes, potential cell-cell interactions between cells enriched in tumor transition, and new possibly drug targets.</p>
-<p>The full Cottrazm documention is avaliable in the package. To reach the user’s guide, install the Cottrazm package and load it into an R session by library (Cottrazm). And they can get help by help (STPreProcess), help (STModiCluster), help (TransitionDefine), help (SpatialDecon), and help (SpatialRecon) to see documentation of the main function. Also description of each function is including in docs/Cottrazm_0.1.1.pdf.</p>
+<p>Cottrazm is an R package to construct tumor spatial microenvironment (TSME) of spatial transcriptomic (ST) data.</p>
+<p>Conttrazm adjusted gene expression with morphological information,<span class="citation"><sup>1</sup></span> and based on morphological adjusted gene expression, Cottrazm applied InferCNV<span class="citation"><sup>2</sup></span> to recognize malignant spots (Mal). Further, Cottrazm arranged spatial spots on hexagonal systems, extrapolated layer by layer from core spots of Mal and determined the identity of spots according to UMAP distance to tumor centroid as Mal or boundary spot (Bdy). When all neighbors of Mal spots are not tumor tissue, the extrapolation will be completed, the remained spots are labeled as non-malignant spots (nMal). Next based on corresponding single cell RNA sequencing (scRNAseq) data of tumor, Cottrazm generated signature score matrix from each cell type in scRNAseq, enrichment score matrix of cell types from scRNAseq in each spot by parametric analysis of gene set enrichment (PAGE) analysis, and topic combined the KNN clusters and location information (Mal, Bdy, and nMal). Then, cell types for each topic were determined based on signature score and enrichment score. Cottrazm calculated the possible proportion of each cell type for each spatial spot by dampened weighted least squares (DWLS), a kind of deconvolution algorithm,<span class="citation"><sup>3</sup></span> to further explore the character of boundary spots as well as malignant and non-malignant spots. Then according to deconvolution result, scRNAseq expression data, and ST expression data, Cottrazm reconstructed the cell type specific gene expression profile (GEP) at sub-spot level, to deeper exploring TSME. Features were weighted in each cell type according to the feature’s contribution in each cell type in scRNAseq reference, then feature expression of sub-spot with a certain cell type was calculated by the cell proportion from deconvolution results and feature weight. Cottrazm can be followed by further analysis, including sub-spot GEP analysis, cell-cell interaction, identification of potential targets of tumor boundary.</p>
+<p>The full Cottrazm documentation is available in the package. To reach the user’s guide, install the Cottrazm package and load it into an R session by library (Cottrazm). And they can get help by help (BoundaryDefine), help (SpatialDecon), and help (SpatialRecon) to see documentation of the main function. Also description of each function is including in docs/Cottrazm_0.1.1.pdf.</p>
 </div>
 <div id="installation-and-requirement" class="section level1">
 <h1>2. Installation and requirement</h1>
 <p>Before installing cottrazm, please properly create conda environment install all dependencies</p>
-<pre class="bash"><code># conda create -n TumorTransition python=3.8
-# conda activate TumorTransition
+<pre class="bash"><code># conda create -n TumorBoundary python=3.8
+# conda activate TumorBoundary
 # pip install -U stlearn</code></pre>
 <pre class="r"><code># library(Seurat)
 # library(magrittr)
@@ -279,8 +279,8 @@ pre code {
 </div>
 <div id="functional-modules" class="section level1">
 <h1>3. functional modules</h1>
-<div id="transition-define" class="section level2">
-<h2>3.1 Transition define</h2>
+<div id="delineation-of-tumor-boundary" class="section level2">
+<h2>3.1 Delineation of tumor boundary</h2>
 <div id="read-preprocessed-and-quality-control-of-tumor-st-data" class="section level3">
 <h3>3.1.1 Read, preprocessed and quality control of tumor ST data</h3>
 <p>We firstly read Spaceranger result, then we examined the quality control result with parameters: nCount_Spatial, nFeature_Spatial and percentage of mitochondria genes. The feature plot and .xlsx file of quality control were saved.</p>
@@ -309,7 +309,7 @@ pre code {
 </div>
 <div id="run-infercnv-on-st-data" class="section level3">
 <h3>3.1.3 Run InferCNV on ST data</h3>
-<p>We firstly use clusters with the highest score of lymphocytes features as reference, because the CNV copy number of lymphocytes were relatively stable. Then we run InferCNV on ST data. You can choose non-adjusted gene expression assay when tissue was properly permeabilized otherwise we recommended use morphological adjusted gene expression assay. At same time, you need to download the gene order file, a .txt file with chromosomal gene order. When running InferCNV, the parameter “analysis_mode” was set as random_trees, the observation spots will be divided to 8 clusters, it will take longer time, but tumor and normal spots will be better separated.</p>
+<p>We firstly use clusters with the highest score of lymphocytes’ features as reference, because the CNV copy number of lymphocytes were relatively stable. Then we run InferCNV on ST data. You can choose non-adjusted gene expression assay when tissue was properly permeabilized otherwise we recommend use morphological adjusted gene expression assay. When running InferCNV, the parameter “analysis_mode” was set as random_trees, the observation spots will be divided to 8 clusters, it will take longer time, but malignant and non-malignant spots will be better separated.</p>
 <p>To avoid crashes, before running STCNV, we recommend set:</p>
 <pre class="bash"><code># ulimit -s 102400</code></pre>
 <p>Then run STCNV in the R script.</p>
@@ -318,7 +318,7 @@ pre code {
 #   STCNV(TumorST = TumorST,
 #         OutDir  = OutDir,
 #         assay = &quot;Spatial&quot;)</code></pre>
-<p>Then we score ST data based on result of InferCNV, visualize CNV scores of each sub-clusters defended by random_tree. Next according to CNV scores, CNV sub-clusters and morphology information, you need to choose tumor sub-clusters.</p>
+<p>Then we score ST data based on result of InferCNV, visualize CNV scores of each CNV labels defined by random_tree. Next according to CNV scores, CNV labels, and morphology information, you need to choose malignant labels.</p>
 <pre class="r"><code># print(&#39;STCNVScore&#39;)
 # 
 # infercnv.dend &lt;-
@@ -342,19 +342,19 @@ pre code {
 #     OutDir = OutDir
 #   )</code></pre>
 </div>
-<div id="define-of-tumor-transition" class="section level3">
-<h3>3.1.4 Define of tumor transition</h3>
-<p>According to plots above, CNV sub-cluster 1 and 2 had the highest CNV scores and share similar morphological state, so we recognize these sub-clusters as putative tumor cluster. Next, we start define the transition of putative tumor cluster, the processed plots and data were saved to OutDir:</p>
+<div id="define-of-tumor-boundary" class="section level3">
+<h3>3.1.4 Define of tumor boundary</h3>
+<p>According to plots above, CNV labels 1 and 2 had the highest CNV scores and share similar morphological state, so we recognize these labels as putative malignant labels. Next, we start define the Boundary of putative malignant labels, the processed plots and data were saved in OutDir:</p>
 <pre class="r"><code># TumorSTn &lt;-
-#   TransitionDefine(
+#   BoundaryDefine(
 #     TumorST = TumorST,
-#     TumorLabel = c(1,2),
+#     MalLabel = c(1,2),
 #     OutDir = OutDir,
 #     Sample = Sample
 #   )</code></pre>
-<p>After defined the transition of tumor, we need to project the tumor spots, transition spots and other spots to spatial HE/IF staining plot. Finally, we generated and saved a transition defined Seurat object for future analysis.</p>
+<p>After defined the Boundary of malignant spots, we need to project the malignant spots (Mal), Boundary spots (Bdy) and non-malignant spots (nMal) to spatial HE/IF staining plot. Finally, we generated and saved a boundary defined Seurat object for future analysis.</p>
 <pre class="r"><code># TumorST &lt;-
-#   TransitionPlot(
+#   BoundaryPlot(
 #     TumorSTn = TumorSTn,
 #     TumorST = TumorST,
 #     OutDir = OutDir,
@@ -362,13 +362,13 @@ pre code {
 #   )</code></pre>
 </div>
 </div>
-<div id="spot-deconvolution" class="section level2">
-<h2>3.2 Spot Deconvolution</h2>
-<p>To better understand of cell composition of tumor transition as well as tumor and out tumor regions, we combined tumor ST data and tumor scRNAseq data and used deconvolution method to estimate the proportion of main cell types in scRNAseq data infiltrated in each spatial spot.</p>
+<div id="deconvolution-for-each-spot" class="section level2">
+<h2>3.2 Deconvolution for each spot</h2>
+<p>To better understand the cell composition of tumor boundary as well as malignant and other non-malignant spots, we combined tumor ST data and tumor scRNAseq data and used deconvolution method to estimate the proportion of cell types in scRNAseq data infiltrated in each spatial spot.</p>
 <div id="preporcess-of-scrnaseq-data" class="section level3">
 <h3>3.2.1 Preporcess of scRNAseq data</h3>
-<p>Firstly, we need to generate significant gene expression file (sig_exp) and a list of marker features of each scRNAseq cell type (clustermarkers_list)</p>
-<pre class="r"><code>#clustermarkers_list
+<p>Firstly, we need to generate significant gene expression file (sig_exp) and a list of markers for each scRNAseq cell type (clustermarkers_list).</p>
+<pre class="r"><code># #clustermarkers_list
 # sc_obj &lt;- readr::read_rds(&quot;YourPath/scRNAseqRef.rds.gz&quot;)
 # clustermarkers &lt;-
 #   Seurat::FindAllMarkers(object = sc_obj,
@@ -393,7 +393,7 @@ pre code {
 </div>
 <div id="enrichment-analysis-of-st-data" class="section level3">
 <h3>3.2.2 Enrichment analysis of ST data</h3>
-<p>Then, we preprocessed ST data and applied PAGE enrichment analysis on ST data to get the enrichment scores of main cell types in scRNAseq data of each spatial spot.</p>
+<p>Then, we preprocessed ST data to get signature score matrix and applied PAGE enrichment analysis on ST data to get the enrichment score matirx of cell types in scRNAseq data of each spatial spot.</p>
 <pre class="r"><code># #Processed ST data
 # TumorST &lt;- NormalizeData(TumorST, assay = &quot;Spatial&quot;)
 # TumorST@meta.data$Decon_topics &lt;-
@@ -413,7 +413,7 @@ pre code {
 #   meta_data &lt;- cbind(meta_data, cluster_score)
 # }
 # colnames(meta_data) &lt;-
-#   c(&quot;nCount_Spaital&quot;,
+#   c(&quot;nCount_Spatial&quot;,
 #     &quot;Decon_topics&quot;,
 #     &quot;Location&quot;,
 #     names(clustermarkers_list))
@@ -432,9 +432,9 @@ pre code {
 #   enrich_analysis(filter_log_expr = filter_log_expr,
 #                   enrich_matrix = enrich_matrix)</code></pre>
 </div>
-<div id="spot-deconvolution-1" class="section level3">
+<div id="spot-deconvolution" class="section level3">
 <h3>3.2.3 Spot deconvolution</h3>
-<p>Next, we applied deconvolution analysis of ST spots expression use dampened weighted least squares (DWLS) to explore the infiltration proportion of main scRNAseq cell type in each spot.</p>
+<p>Next, we applied DWLS deconvolution analysis to ST data to explore the proportion of scRNAseq cell type infiltrated in each spot.</p>
 <pre class="r"><code># DeconData &lt;- SpatialDecon(enrich_matrix = enrich_matrix,
 #                          enrich_result = enrich_result,
 #                          filter_expr = filter_expr,
@@ -449,9 +449,9 @@ pre code {
 </div>
 <div id="visualization" class="section level3">
 <h3>3.2.4 Visualization</h3>
-<p>After getting the deconvolution result, we need to visualize the result with pie plot and bar plot. Pie plot was used to project the main cell type infiltration of each spot to spatial. Bar plot was used to compare cell type infiltration of tumor, tumor transition and other out tumor spots.</p>
+<p>After getting the deconvolution result, we need to visualize the result with pie plot and bar plot. Pie plot was used to project the cell type infiltrated in each spot to spatial. Bar plot was used to compare cell type infiltrated in different locations including: malignant spots (Mal), boundary spots (Bdy), and non-malignant spots (nMal).</p>
 <pre class="r"><code># plot_col &lt;- colnames(DeconData)[2:ncol(DeconData)]
-# img_path = &quot;inst/extdata/outs/spatial/tissue_lowres_image.png&quot;
+# img_path = &quot;Spaceranger/outs/spatial/tissue_lowres_image.png&quot;
 # DeconPieplot(
 #   DeconData = DeconData,
 #   TumorST = TumorST,
@@ -467,46 +467,46 @@ pre code {
 #              plot_col = plot_col)</code></pre>
 </div>
 </div>
-<div id="reconstruct-of-spatial-tumor-microenvironment" class="section level2">
-<h2>3.3 Reconstruct of spatial tumor microenvironment</h2>
-<p>Based on tumor transition define result and spatial deconvolution result, we eager to reconstruct of spatial tumor microenrironment at almost single cell level, which made up for the problem of insufficient resolution of ST data.</p>
-<div id="reconstruction-of-spatial-gene-expression-matrix-for-sub-spots" class="section level3">
-<h3>3.3.1 Reconstruction of spatial gene expression matrix for sub-spots</h3>
-<p>Finally, we constructed the ST feature expression at single cell level based on ST data, scRNAseq data and spot deconvolution result, which could be used for further analysis. In this vignette, we only reconstruct the TME of tumor transition, which was the region most likely associated with tumor progression, drug resistance and tumor metastasis. If you want to reconstruct TME of whole ST data, you can change parameter Location = c(“Tumor”,“Trans”,“OutSpots”), but it will take longer time.</p>
+<div id="reconstruct-of-tumor-spatial-microencironment" class="section level2">
+<h2>3.3 Reconstruct of tumor spatial microencironment</h2>
+<p>Based on tumor boundary define result and spatial deconvolution result, we eager to reconstruct the tumor spatial microenrironment (TSME) at sub-spot level, which made up for the problem of insufficient resolution of ST data.</p>
+<div id="reconstruction-of-spatial-gene-expression-profile-of-scrnaseq-cell-types-for-sub-spots" class="section level3">
+<h3>3.3.1 Reconstruction of spatial gene expression profile of scRNAseq cell types for sub-spots</h3>
+<p>Finally, we reconstructed the ST gene expression profile of scRNAseq cell types at sub-spot level based on ST data, scRNAseq data and spot deconvolution result, which could be used for further analysis. In this vignette, we only reconstruct the TSME of boundary spots, which was the region most likely associated with tumor progression, drug resistance and tumor metastasis. If you want to reconstruct TSME of whole ST data, you can change parameter Location = c(“Mal”,“Byd”,“nMal”), but it will take longer time.</p>
 <pre class="r"><code># TumorSTRecon &lt;-
 #   SpatialRecon(
 #     TumorST = TumorST,
 #     sig_exp = sig_exp,
 #     clustermarkers_list = clustermarkers_list,
 #     DeconData = DeconData,
-#     Location = c(&quot;Trans&quot;)
+#     Location = &quot;Bdy&quot;
 #   )</code></pre>
 </div>
-<div id="differentially-expressed-genes-of-tumor-transition" class="section level3">
-<h3>3.3.2 Differentially expressed genes of tumor transition</h3>
-<p>To reconstruct of spatial tumor microenvironment, we firstly find differentially expressed genes (DEG) in transition:</p>
+<div id="differentially-expressed-genes-of-tumor-boundary" class="section level3">
+<h3>3.3.2 Differentially expressed genes of tumor Boundary</h3>
+<p>To reconstruct of tumor spatial microenvironment, we then find differential expressed genes (DEG) in boundary spots:</p>
 <pre class="r"><code># DiffGenes &lt;- FindDiffGenes(TumorST = TumorST, assay = &quot;Spatial&quot;)</code></pre>
-<p>Then, we visualized tumor transition DEG use volcano plot. If you want to visualize other types of ST data spots, you can change parameter Location to “Tumor” or “OutSpots”.</p>
+<p>Nex, we visualized boundary DEG by volcano plot. If you want to visualize other types of ST data spots, you can change parameter Location to “Mal” or “nMal”.</p>
 <pre class="r"><code># DiffVolcanoplot(
 #   DiffGenes = DiffGenes,
-#   Location = &quot;Trans&quot;,
+#   Location = &quot;Bdy&quot;,
 #   cut_off_pvalue = 2,
 #   cut_off_logFC = 0.25,
 #   n = 15
 # )</code></pre>
-<p>After find the DEG of tumor transition, we explored the KEGG and GO pathways theses features enriched in and speculated the possibly function of tumor transition</p>
-<pre class="r"><code># transition_enrich &lt;-
+<p>After find the DEG of boundary spots, we explored the KEGG and GO pathways theses features enriched in and speculated the possibly function of tumor boundary.</p>
+<pre class="r"><code># boundary_enrich &lt;-
 #   FeatureEnrichment(
 #     DiffGenes = DiffGenes,
 #     cut_off_logFC = 0.25,
 #     cut_off_pvalue = 0.05,
-#     Location = &quot;Trans&quot;
+#     Location = &quot;Bdy&quot;
 #   )</code></pre>
 </div>
 </div>
 <div id="summary" class="section level2">
 <h2>4. Summary</h2>
-<p>Cottrazm contain three main function modules (Transition Define, Spot Deconvolution, and Reconstruct Spatial TME) which allow users to easily analys ST tumor data. here may still be gaps in the toolkit, but we’ll work on more features later. If you have any suggestions or questions, please feel free to contact us (<a href="mailto:vera-morland@sjtu.edu.cn" class="email">vera-morland@sjtu.edu.cn</a>).</p>
+<p>Cottrazm includes three main function modules (BoundaryDefine, SpaitalDecon, and SpatialRecon) which allow users to easily analys ST tumor data. Here may still be gaps in the toolkit, but we’ll work on more features later. If you have any suggestions or questions, please feel free to contact us (<a href="mailto:vera-morland@sjtu.edu.cn" class="email">vera-morland@sjtu.edu.cn</a>).</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>5. Session information</h2>
@@ -530,19 +530,12 @@ pre code {
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bslib_0.3.1       jquerylib_0.1.4   compiler_4.1.0    pillar_1.7.0     
-##  [5] prettyunits_1.1.1 remotes_2.4.2     tools_4.1.0       testthat_3.1.3   
-##  [9] digest_0.6.29     pkgbuild_1.3.1    pkgload_1.2.4     jsonlite_1.8.0   
-## [13] memoise_2.0.1     evaluate_0.15     lifecycle_1.0.1   tibble_3.1.6     
-## [17] pkgconfig_2.0.3   rlang_1.0.2       cli_3.2.0         rstudioapi_0.13  
-## [21] yaml_2.3.5        xfun_0.30         fastmap_1.1.0     stringr_1.4.0    
-## [25] withr_2.5.0       knitr_1.38        sass_0.4.1        desc_1.4.1       
-## [29] fs_1.5.2          vctrs_0.4.1       devtools_2.4.3    rprojroot_2.0.3  
-## [33] glue_1.6.2        R6_2.5.1          processx_3.5.3    fansi_1.0.3      
-## [37] rmarkdown_2.13    sessioninfo_1.2.2 callr_3.7.0       purrr_0.3.4      
-## [41] magrittr_2.0.3    ps_1.6.0          ellipsis_0.3.2    htmltools_0.5.2  
-## [45] usethis_2.1.5     utf8_1.2.2        stringi_1.7.6     cachem_1.0.6     
-## [49] crayon_1.5.1      brio_1.1.3</code></pre>
+##  [1] digest_0.6.29   R6_2.5.1        jsonlite_1.8.0  magrittr_2.0.3 
+##  [5] evaluate_0.15   stringi_1.7.6   rlang_1.0.2     cli_3.2.0      
+##  [9] rstudioapi_0.13 jquerylib_0.1.4 bslib_0.3.1     rmarkdown_2.13 
+## [13] tools_4.1.0     stringr_1.4.0   xfun_0.30       yaml_2.3.5     
+## [17] fastmap_1.1.0   compiler_4.1.0  htmltools_0.5.2 knitr_1.39     
+## [21] sass_0.4.1</code></pre>
 </div>
 <div id="reference" class="section level2 unnumbered">
 <h2 class="unnumbered">6. Reference</h2>

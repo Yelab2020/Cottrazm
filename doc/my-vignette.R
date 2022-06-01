@@ -90,16 +90,16 @@
 
 ## -----------------------------------------------------------------------------
 # TumorSTn <-
-#   TransitionDefine(
+#   BoundaryDefine(
 #     TumorST = TumorST,
-#     TumorLabel = c(1,2),
+#     MalLabel = c(1,2),
 #     OutDir = OutDir,
 #     Sample = Sample
 #   )
 
 ## -----------------------------------------------------------------------------
 # TumorST <-
-#   TransitionPlot(
+#   BoundaryPlot(
 #     TumorSTn = TumorSTn,
 #     TumorST = TumorST,
 #     OutDir = OutDir,
@@ -107,7 +107,7 @@
 #   )
 
 ## -----------------------------------------------------------------------------
-#clustermarkers_list
+# #clustermarkers_list
 # sc_obj <- readr::read_rds("YourPath/scRNAseqRef.rds.gz")
 # clustermarkers <-
 #   Seurat::FindAllMarkers(object = sc_obj,
@@ -150,7 +150,7 @@
 #   meta_data <- cbind(meta_data, cluster_score)
 # }
 # colnames(meta_data) <-
-#   c("nCount_Spaital",
+#   c("nCount_Spatial",
 #     "Decon_topics",
 #     "Location",
 #     names(clustermarkers_list))
@@ -182,10 +182,9 @@
 # 
 # print(head(DeconData))
 
-
 ## -----------------------------------------------------------------------------
 # plot_col <- colnames(DeconData)[2:ncol(DeconData)]
-# img_path = "inst/extdata/outs/spatial/tissue_lowres_image.png"
+# img_path = "Spaceranger/outs/spatial/tissue_lowres_image.png"
 # DeconPieplot(
 #   DeconData = DeconData,
 #   TumorST = TumorST,
@@ -207,7 +206,7 @@
 #     sig_exp = sig_exp,
 #     clustermarkers_list = clustermarkers_list,
 #     DeconData = DeconData,
-#     Location = c("Trans")
+#     Location = "Bdy"
 #   )
 
 ## -----------------------------------------------------------------------------
@@ -216,19 +215,19 @@
 ## -----------------------------------------------------------------------------
 # DiffVolcanoplot(
 #   DiffGenes = DiffGenes,
-#   Location = "Trans",
+#   Location = "Bdy",
 #   cut_off_pvalue = 2,
 #   cut_off_logFC = 0.25,
 #   n = 15
 # )
 
 ## -----------------------------------------------------------------------------
-# transition_enrich <-
+# boundary_enrich <-
 #   FeatureEnrichment(
 #     DiffGenes = DiffGenes,
 #     cut_off_logFC = 0.25,
 #     cut_off_pvalue = 0.05,
-#     Location = "Trans"
+#     Location = "Bdy"
 #   )
 
 ## -----------------------------------------------------------------------------

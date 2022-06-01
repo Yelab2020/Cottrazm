@@ -18,7 +18,7 @@ get_enrich_matrix(
 A binary matrix features as row, cell types as column
 }
 \description{
-Construct enrich matrix for PAGE enrichment
+Construct binary matrix for PAGE enrichment
 }
 \examples{
 

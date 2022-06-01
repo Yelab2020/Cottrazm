@@ -1,7 +1,7 @@
-#source('R/transition_define_settings.R')
+#source('R/boundary_define_settings.R')
 #InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 #Sample = "CRC1"
-#OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 
 #' Title ST data preprocess
 #'
@@ -17,7 +17,7 @@
 #' @examples
 #' InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 #' Sample = "CRC1"
-#' OutDir = "YourPath/TumorTransition/Fig/1.TransitionDefine/CRC1/"
+#' OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' TumorST <- STPreProcess(InDir = InDir,OutDir = OutDir,Sample = Sample)
 #'
 STPreProcess <- function(InDir = InDir,Sample = Sample, OutDir = NULL){
