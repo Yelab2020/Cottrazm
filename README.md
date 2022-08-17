@@ -5,6 +5,8 @@ Cottrazm (**Co**nstruct **T**umor **Tra**nsition **Z**one (Boundary) **M**icroen
 
  Taken together, Cottrazm provides an integrated tool framework to dissect the tumor spatial microenvironment and facilitates the discovery of functional biological insights, thereby identifying therapeutic targets in oncologic ST datasets.
  
+
+ ![Alt text](https://github.com/Yelab2020/Cottrazm/blob/main/doc/github%20figure1.pdf)
 ## Installation
 
 The development version can be installed from git hub with 'devtools'.
