@@ -30,10 +30,11 @@ A Seurat object of ST data with CNV sub-clusters and CNV scores
 add cnv score to ST Seurat object
 }
 \examples{
-infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
-cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"))
+infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt", package = "Cottrazm"))
+cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt", package = "Cottrazm"))
 TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
-OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
-Sample = "CRC1"
-TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir,Sample = Sample)
+OutDir <- "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
+Sample <- "CRC1"
+TumorST <- STCNVScore(infercnv.dend = infercnv.dend, cnv_table = cnv_table, TumorST = TumorST, OutDir = OutDir, Sample = Sample)
+
 }

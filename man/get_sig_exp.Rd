@@ -24,5 +24,6 @@ A matrix features as row, scRNAseq cell types as column
 Get mean expression of scRNAseq significant features across each cell type
 }
 \examples{
+sig_exp <- get_sig_exp(se.obj = sc_obj,DefineTypes = "MajorTypes",sig_scran = unique(unlist(clustermarkers_list)))
 
 }

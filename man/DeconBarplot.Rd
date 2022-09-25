@@ -21,7 +21,7 @@ Bar plot of deconvolution result in location groups
 }
 \examples{
 TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
-DeconData <- oepnxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
+DeconData <- oepnxlsx::read.xlsx(system.file("extdata/DeconData.xlsx", package = "Cottrazm"))
 plot_col <- colnames(DeconData)[2:ncol(DeconData)]
 DeconBarplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col)
 

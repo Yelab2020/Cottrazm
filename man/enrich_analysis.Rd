@@ -18,5 +18,20 @@ A matrix of enrich result, cell types as row, spatial spots as column
 PAGE enrich analysis
 }
 \examples{
+TumorST <- readr::read_rds("YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+sig_exp <- readr::read_rds("YourPath/sig_exp.rds.gz")
+clustermarkers_list <- readr::read_rds("YourPath/clustermarkers_list.rds.gz")
+# get st and sc filtered expr data
+TumorST <- NormalizeData(TumorST,assay = "Spatial")
+TumorST@meta.data$Decon_topics <- paste(TumorST@meta.data$Location,TumorST@meta.data$seurat_clusters,sep = "_")
+expr_values = as.matrix(TumorST@assays$Spatial@data) #ST expr log
+nolog_expr = 2^(expr_values)-1 #ST expr nolog
+# filter st and sc feature
+intersect_gene = intersect(rownames(sig_exp), rownames(nolog_expr))
+filter_sig = sig_exp[intersect_gene,]
+filter_log_expr = expr_values[intersect_gene,]
+# get enrich matrix
+enrich_matrix <- get_enrich_matrix(filter_sig = filter_sig,clustermarkers_list = clustermarkers_list)
+enrich_result <- enrich_analysis(filter_log_expr = filter_log_expr,enrich_matrix = enrich_matrix)
 
 }

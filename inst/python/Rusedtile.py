@@ -42,10 +42,10 @@ def ME_normalize(inDir,outDir,sample):
     #convert SME_norm data to sparesmatrix
     raw_SME_normalized = mat(data.obsm['raw_SME_normalized'])
     raw_SME_normalizedA = sparse.csr_matrix(raw_SME_normalized)
-    print ("matrix conver ok!")
+    print ("matrix convert ok!")
     
     io.mmwrite(os.path.join(outDir,'{0}_raw_SME_normalizeA.mtx'.format(sample)),raw_SME_normalizedA)
-    print("Morphology adjusted is ok!")
+    print("Morphology adjusted ok!")
 
     return raw_SME_normalizedA
    

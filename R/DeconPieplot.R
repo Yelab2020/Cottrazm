@@ -23,11 +23,11 @@
 #' @export
 #'
 #' @examples
-#'TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
-#'DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
-#'plot_col <- colnames(DeconData)[2:ncol(DeconData)]
-#'img_path = system.file("extdata/outs/spatial/tissue_lowres_image.png",package = "Cottrazm")
-#'DeconPieplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col, img_path = img_path, pie_scale = 0.4, scatterpie_alpha = 0.8, border_color = "grey")
+#' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
+#' DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx", package = "Cottrazm"))
+#' plot_col <- colnames(DeconData)[2:ncol(DeconData)]
+#' img_path <- system.file("extdata/outs/spatial/tissue_lowres_image.png", package = "Cottrazm")
+#' DeconPieplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col, img_path = img_path, pie_scale = 0.4, scatterpie_alpha = 0.8, border_color = "grey")
 #'
 DeconPieplot <- function(DeconData = DeconData,
                          TumorST = TumorST,
@@ -35,9 +35,8 @@ DeconPieplot <- function(DeconData = DeconData,
                          img_path = img_path,
                          pie_scale = pie_scale,
                          scatterpie_alpha = scatterpie_alpha,
-                         border_color = border_color){
-
-  DeconData <- DeconData[DeconData$cell_ID %in% rownames(TumorST@meta.data),]
+                         border_color = border_color) {
+  DeconData <- DeconData[DeconData$cell_ID %in% rownames(TumorST@meta.data), ]
 
   ## Preprocess data
   slice <- names(TumorST@images)[1]
@@ -48,14 +47,15 @@ DeconPieplot <- function(DeconData = DeconData,
       imagerow_scaled =
         imagerow * TumorST@images[[slice]]@scale.factors$lowres,
       imagecol_scaled =
-        imagecol * TumorST@images[[slice]]@scale.factors$lowres) %>%
-    dplyr::inner_join(DeconData,by = "cell_ID")
+        imagecol * TumorST@images[[slice]]@scale.factors$lowres
+    ) %>%
+    dplyr::inner_join(DeconData, by = "cell_ID")
 
   ### Load histological image into R
-  img_path = img_path #lowers image png(input dir)
+  img_path <- img_path # lowers image png(input dir)
   img_frmt <- base::tolower(stringr::str_sub(img_path, -4, -1))
 
-  if(img_frmt %in% c(".jpg", "jpeg")) {
+  if (img_frmt %in% c(".jpg", "jpeg")) {
     img <- jpeg::readJPEG(img_path)
   } else if (img_frmt == ".png") {
     img <- png::readPNG(img_path)
@@ -63,9 +63,10 @@ DeconPieplot <- function(DeconData = DeconData,
 
   # Convert image to grob object
   img_grob <- grid::rasterGrob(img,
-                               interpolate = FALSE,
-                               width = grid::unit(1, "npc"),
-                               height = grid::unit(1, "npc"))
+    interpolate = FALSE,
+    width = grid::unit(1, "npc"),
+    height = grid::unit(1, "npc")
+  )
 
 
   ## Plot spatial scatterpie plot
@@ -75,24 +76,30 @@ DeconPieplot <- function(DeconData = DeconData,
       xmin = 0,
       xmax = ncol(img),
       ymin = 0,
-      ymax = -nrow(img)) +
+      ymax = -nrow(img)
+    ) +
     scatterpie::geom_scatterpie(
       data = spatial_coord,
-      ggplot2::aes(x = imagecol_scaled,
-                   y = imagerow_scaled),
+      ggplot2::aes(
+        x = imagecol_scaled,
+        y = imagerow_scaled
+      ),
       cols = plot_col,
       color = border_color,
       alpha = scatterpie_alpha,
-      pie_scale = pie_scale) +
+      pie_scale = pie_scale
+    ) +
     ggplot2::scale_y_reverse() +
     ggplot2::ylim(nrow(img), 0) +
     ggplot2::xlim(0, ncol(img)) +
     cowplot::theme_half_open(11, rel_small = 1) +
     ggplot2::theme_void() +
-    ggplot2::coord_fixed(ratio = 1,
-                         xlim = NULL,
-                         ylim = NULL,
-                         expand = TRUE,
-                         clip = "on")
+    ggplot2::coord_fixed(
+      ratio = 1,
+      xlim = NULL,
+      ylim = NULL,
+      expand = TRUE,
+      clip = "on"
+    )
   return(scatterpie_plt)
 }

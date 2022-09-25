@@ -4,17 +4,17 @@
 \alias{nbrs}
 \title{Title get neighbors of spot}
 \usage{
-nbrs(df_j = df_j, MalSpotIDAdd = MalSpotIDAdd, SpotIDRaw = SpotIDRaw)
+nbrs(df_j = df_j, MalCellIDAdd = MalCellIDAdd, CellIDRaw = CellIDRaw)
 }
 \arguments{
-\item{df_j}{<list> contain spatial spot and its' neighbors}
+\item{df_j}{a list contain spatial spot and its' neighbors}
 
-\item{MalSpotIDAdd}{<character> spatial malignant spots' id to find neighbors}
+\item{MalCellIDAdd}{barcodes of spatial malignant spots to find neighbors}
 
-\item{SpotIDRaw}{<character> spatial spots' id already defined}
+\item{CellIDRaw}{barcodes of spatial spots already defined location}
 }
 \value{
-<list> contain spatial spot and its' neighbors
+a list contain spatial spot and its' neighbors
 }
 \description{
 get neighbor spots' id of MalSpotIDAdd

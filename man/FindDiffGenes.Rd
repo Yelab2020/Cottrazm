@@ -19,7 +19,7 @@ Find differential expressed genes in malignant (Mal) spots, boundary (Bdy) spots
 }
 \examples{
 TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
-assay = "Spatial"
-DiffGenes <- FindDiffGenes(TumorST = TumorST,assay = assay)
+assay <- "Spatial"
+DiffGenes <- FindDiffGenes(TumorST = TumorST, assay = assay)
 
 }

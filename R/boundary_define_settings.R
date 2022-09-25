@@ -1,7 +1,6 @@
 library(Seurat)
 library(magrittr)
 library(dplyr)
-#library(Matrix)
 library(ggplot2)
 library(stringr)
 library(RColorBrewer)
@@ -25,6 +24,7 @@ options(stringsAsFactors = F)
   "#33A02C", "#B2DF8A", "#55B1B1", "#8DD3C7", "#A6761D",
   "#E6AB02", "#7570B3", "#BEAED4", "#666666", "#999999",
   "#aa8282", "#d4b7b7", "#8600bf", "#ba5ce3", "#808000",
-  "#aeae5c", "#1e90ff", "#00bfff", "#56ff0d", "#ffff00")
+  "#aeae5c", "#1e90ff", "#00bfff", "#56ff0d", "#ffff00"
+)
 
 set.seed(666)

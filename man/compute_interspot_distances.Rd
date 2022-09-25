@@ -7,12 +7,12 @@
 compute_interspot_distances(position, scale.factor = 1.05)
 }
 \arguments{
-\item{position}{<data.frame> spatial spots information(spot id, row, cols ,imagerow, imagecol)}
+\item{position}{a data frame contain spatial spots' information(spot id, row, cols ,imagerow, imagecol)}
 
-\item{scale.factor}{<numeric> scale factor}
+\item{scale.factor}{scale factor}
 }
 \value{
-
+a list contain predicted radius
 }
 \description{
 Title compute_interspots_distance

@@ -32,18 +32,19 @@
 #' @export
 #'
 #' @examples
+#' enrich_matrix <- get_enrich_matrix(filter_sig = filter_sig,clustermarkers_list = clustermarkers_list)
 #'
-get_enrich_matrix <- function(filter_sig = filter_sig,clustermarkers_list = clustermarkers_list){
+get_enrich_matrix <- function(filter_sig = filter_sig, clustermarkers_list = clustermarkers_list) {
 
-  #construct enrich matrix initial
-  enrich_matrix<-matrix(0,nrow=dim(filter_sig)[1],ncol=dim(filter_sig)[2])
-  rownames(enrich_matrix)<-rownames(filter_sig)
-  colnames(enrich_matrix)<-colnames(filter_sig)
+  # construct enrich matrix initial
+  enrich_matrix <- matrix(0, nrow = dim(filter_sig)[1], ncol = dim(filter_sig)[2])
+  rownames(enrich_matrix) <- rownames(filter_sig)
+  colnames(enrich_matrix) <- colnames(filter_sig)
 
-  for (i in 1:ncol(enrich_matrix)){
-    cluster = colnames(enrich_matrix)[i]
-    feature = intersect(clustermarkers_list[[cluster]], rownames(enrich_matrix))
-    enrich_matrix[feature,cluster]=1
+  for (i in 1:ncol(enrich_matrix)) {
+    cluster <- colnames(enrich_matrix)[i]
+    feature <- intersect(clustermarkers_list[[cluster]], rownames(enrich_matrix))
+    enrich_matrix[feature, cluster] <- 1
   }
 
   return(enrich_matrix)

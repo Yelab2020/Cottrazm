@@ -16,21 +16,21 @@ ClusterUpdate(
 )
 }
 \arguments{
-\item{MalCellIDN}{<character> new defined malignant (Mal) spots' ids}
+\item{MalCellIDN}{barcodes of newlydefined malignant (Mal) spots}
 
 \item{position}{<data.frame> spatial spots information(spot id, row, cols ,imagerow, imagecol)}
 
-\item{df_j}{<list> contain spaital spot and its' neighbors}
+\item{df_j}{a list contain spatial spots and thier neighbors}
 
 \item{UMAPembeddings}{<data.frame> spatial spots' umap reduction coordinates}
 
-\item{NormalCellID}{<character> normal spots' ids}
+\item{NormalCellID}{barcodes of normal spots}
 
-\item{BdyCellID}{<character> boundary (Bdy) spots' ids}
+\item{BdyCellID}{barcodes of boundary (Bdy) spots}
 
-\item{MalCellID}{<character> all malignant spots' ids}
+\item{MalCellID}{barcodes of all malignant spots}
 
-\item{x}{<integer> repeat times}
+\item{x}{repeat times}
 }
 \value{
 <data.frame> neighbors of new defined malignant spots' ids and their define types

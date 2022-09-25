@@ -22,33 +22,34 @@
 #' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
 #' sig_exp <- readr::read_rds("YourPath/sig_exp.rds.gz")
 #' clustermarkers_list <- readr::read_rds("YourPath/clustermarkers_list.rds.gz")
-#' DeconData <- oepnxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
+#' DeconData <- oepnxlsx::read.xlsx(system.file("extdata/DeconData.xlsx", package = "Cottrazm"))
 #' TumorSTSub <- SpatialRecon(TumorST = TumorST, sig_exp = sig_exp, clustermarkers_list = clustermarkers_list, DeconData = DeconData, Location = "Bdy")
 #'
 SpatialRecon <- function(TumorST = TumorST,
-                           sig_exp = sig_exp,
-                           clustermarkers_list = clustermarkers_list,
-                           DeconData = DeconData,
-                           Location = NULL){
-
-  if (is.null(Location) == TRUE){
-    Location = c("Mal","Bdy","nMal")
+                         sig_exp = sig_exp,
+                         clustermarkers_list = clustermarkers_list,
+                         DeconData = DeconData,
+                         Location = NULL) {
+  if (is.null(Location) == TRUE) {
+    Location <- c("Mal", "Bdy", "nMal")
   }
 
-  #get_recons_mtx
-  mtx <- get_recon_mtx(TumorST = TumorST,
-                       sig_exp = sig_exp,
-                       clustermarkers_list = clustermarkers_list,
-                       DeconData = DeconData,
-                       Location = Location)
+  # get_recons_mtx
+  mtx <- get_recon_mtx(
+    TumorST = TumorST,
+    sig_exp = sig_exp,
+    clustermarkers_list = clustermarkers_list,
+    DeconData = DeconData,
+    Location = Location
+  )
 
-  #creat recon seurat object
+  # creat recon seurat object
 
-  TumorSTRecon <- CreateSeuratObject(counts = as.matrix(mtx),project = "TumorSTRecon",assay = "RNA")
-  TumorSTRecon@meta.data$Subtypes <- as.data.frame(do.call(rbind,strsplit(rownames(TumorSTRecon@meta.data),split = "_")))$V1
-  TumorSTRecon@meta.data$Subtypes <- gsub("\\.","_",TumorSTRecon@meta.data$Subtypes)
-  TumorSTRecon@meta.data$orig.ident <- as.data.frame(do.call(rbind,strsplit(rownames(TumorSTRecon@meta.data),split = "_")))$V2
-  TumorSTRecon@meta.data$Location <- TumorST@meta.data$Location[match(TumorSTRecon@meta.data$orig.ident,rownames(TumorST@meta.data))]
+  TumorSTRecon <- CreateSeuratObject(counts = as.matrix(mtx), project = "TumorSTRecon", assay = "RNA")
+  TumorSTRecon@meta.data$Subtypes <- as.data.frame(do.call(rbind, strsplit(rownames(TumorSTRecon@meta.data), split = "_")))$V1
+  TumorSTRecon@meta.data$Subtypes <- gsub("\\.", "_", TumorSTRecon@meta.data$Subtypes)
+  TumorSTRecon@meta.data$orig.ident <- as.data.frame(do.call(rbind, strsplit(rownames(TumorSTRecon@meta.data), split = "_")))$V2
+  TumorSTRecon@meta.data$Location <- TumorST@meta.data$Location[match(TumorSTRecon@meta.data$orig.ident, rownames(TumorST@meta.data))]
 
   return(TumorSTRecon)
 }

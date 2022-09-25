@@ -9,12 +9,12 @@ find_neighbors(position, radius, method = c("manhattan", "euclidean"))
 \arguments{
 \item{position}{<data.frame> spatial spots information(spot id, row, cols ,imagerow, imagecol)}
 
-\item{radius}{<numeric> in dists}
+\item{radius}{predicted radius of spatial spots}
 
-\item{method}{<character> method to calculate distance}
+\item{method}{method to calculate distance}
 }
 \value{
-<list> of all spatial spots' neighbors
+a list contain of all spatial spots' neighbors
 }
 \description{
 Title find neighbors

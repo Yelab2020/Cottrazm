@@ -37,9 +37,9 @@ Pie plot of deconvolution result
 }
 \examples{
 TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTBoundaryDefine.rds.gz")
-DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx",package = "Cottrazm"))
+DeconData <- openxlsx::read.xlsx(system.file("extdata/DeconData.xlsx", package = "Cottrazm"))
 plot_col <- colnames(DeconData)[2:ncol(DeconData)]
-img_path = system.file("extdata/outs/spatial/tissue_lowres_image.png",package = "Cottrazm")
+img_path <- system.file("extdata/outs/spatial/tissue_lowres_image.png", package = "Cottrazm")
 DeconPieplot(DeconData = DeconData, TumorST = TumorST, plot_col = plot_col, img_path = img_path, pie_scale = 0.4, scatterpie_alpha = 0.8, border_color = "grey")
 
 }
