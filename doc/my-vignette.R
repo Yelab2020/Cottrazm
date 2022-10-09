@@ -91,7 +91,7 @@ library(org.Hs.eg.db)
 #  TumorSTn <-
 #    BoundaryDefine(
 #      TumorST = TumorST,
-#      MalLabel = c(1,2),
+#      MalLabel = c(7,8),
 #      OutDir = OutDir,
 #      Sample = Sample
 #    )
@@ -106,7 +106,7 @@ library(org.Hs.eg.db)
 #    )
 
 ## ----echo=FALSE---------------------------------------------------------------
-TumorST <- readr::read_rds('/work/xzz123/Project/2021/TumorBoundary/package/CRC1/CRC1BoundaryDefine.rds.gz')
+TumorST <- readr::read_rds('/work/xzz123/Project/2021/TumorBoundary/package/CRC1/CRC1_BoundaryDefine.rds.gz')
 Seurat::SpatialDimPlot(TumorST,group.by = 'Location',cols = c("#CB181D", "#1f78b4", "#fdb462"))
 
 ## ----eval = FALSE-------------------------------------------------------------
