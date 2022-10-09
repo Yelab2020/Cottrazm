@@ -20,5 +20,5 @@ devtools::install_github("Yelab2020/Cottrazm")
 
 ## Usage
 
-For usage of Cottrazm, please refer to the [vignette](doc/Cottrazm_0.1.1.pdf)
+For usage of Cottrazm, please refer to the [vignette](doc/my-vignette.pdf)
 
