@@ -2,13 +2,11 @@
 title: 'Cottrazm: Construct Tumor Transition Zone Microenvironment'
 author: "Zhenzhen Xun, Xinyu Ding, Youqiong Ye#"
 date: "2022-1-23"
-output: 
+output:
   rmarkdown::html_vignette:
-    toc: yes
-documentclass: ctexart
+    toc: yes  
 bibliography: MyCollection.bib
 csl: nature.csl
-
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEncoding{UTF-8}
@@ -92,9 +90,11 @@ InDir = paste(system.file("extdata/outs",package = "Cottrazm"),"/",sep = "")
 Sample = "CRC1"
 OutDir = paste(getwd(),"/",Sample,"/",sep = "")
 TumorST <-
-  STPreProcess(InDir = InDir,
-               OutDir = OutDir,
-               Sample = Sample)
+  STPreProcess(
+    InDir = InDir,
+    OutDir = OutDir,
+    Sample = Sample
+    )
 ```
 
 ### 3.1.2 Morphological adjusted cluster determination
@@ -113,46 +113,29 @@ TumorST <-
 ```
 
 ### 3.1.3 Run InferCNV on ST data
-We firstly use clusters with the highest score of lymphocytes' features as reference, because the CNV copy number of lymphocytes were relatively stable. Then we run InferCNV on ST data. You can choose non-adjusted gene expression assay when tissue was properly permeabilized otherwise we recommend use morphological adjusted gene expression assay. When running InferCNV, the parameter "analysis_mode" was set as random_trees, the observation spots will be divided to 8 clusters, it will take longer time, but malignant and non-malignant spots will be better separated.
-
-To avoid crashes, before running STCNV, we recommend set:
-```{bash}
-# ulimit -s 102400 
-```
-Because this step takes long time, we recommend run STCNV in the R script.
+We firstly use clusters with the highest score of lymphocytes' features as reference, because the CNV copy number of lymphocytes were relatively stable. Then we run InferCNV on ST data. You can select non-adjusted gene expression assay when tissue was properly permeabilized otherwise we recommend use morphological adjusted gene expression assay. When running InferCNV, the parameter "analysis_mode" was set as random_trees, the observation spots will be divided to 8 clusters, it will take longer time, but malignant and non-malignant spots will be better separated.
 
 ```{r eval = FALSE}
 print('STCNV' )
 STInferCNV <-
-  STCNV(TumorST = TumorST,
-        OutDir  = OutDir,
-        assay = "Spatial")
+  STCNV(
+    TumorST = TumorST,
+    OutDir  = OutDir,
+    assay = "Spatial"
+    )
 ```
 
-Then we score ST data based on result of InferCNV, visualize CNV scores of each CNV labels defined by random_tree. Next according to CNV scores, CNV labels, and morphology information, you need to choose malignant labels.
+Then we score ST data based on result of InferCNV, visualize CNV scores of each CNV labels defined by random_tree model. Next according to CNV scores, CNV labels, and morphology information, you need to assign malignant labels.
 ```{r eval = FALSE}
 print('STCNVScore')
 
-infercnv.dend <-
-  read.tree(
-    file =
-      system.file("inst/extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm")
-  )
-
-cnv_table <-
-  read.table(
-    file =
-      system.file("inst/extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm")
-  )
-
 TumorST <-
   STCNVScore(
-    infercnv.dend = infercnv.dend,
-    cnv_table = cnv_table,
     TumorST = TumorST,
+    assay = "Spatial",
     Sample = Sample,
     OutDir = OutDir
-  )
+    )
 ```
 
 
@@ -264,15 +247,17 @@ enrich_result <-
 ### 3.2.3 Spot deconvolution
 Next, we applied DWLS deconvolution analysis to ST data to explore the proportion of scRNAseq cell type infiltrated in each spot.
 ```{r eval = FALSE}
-DeconData <- SpatialDecon(enrich_matrix = enrich_matrix,
-                         enrich_result = enrich_result,
-                         filter_expr = filter_expr,
-                         filter_sig = filter_sig,
-                         clustermarkers_list = clustermarkers_list,
-                         meta_data = meta_data,
-                         malignant_cluster = "Malignant epithelial cells",
-                         tissue_cluster = "Epithelial cells",
-                         stromal_cluster = "Fibroblast cells")
+DeconData <- SpatialDecon(
+  enrich_matrix = enrich_matrix,
+  enrich_result = enrich_result,
+  filter_expr = filter_expr,
+  filter_sig = filter_sig,
+  clustermarkers_list = clustermarkers_list,
+  meta_data = meta_data,
+  malignant_cluster = "Malignant epithelial cells",
+  tissue_cluster = "Epithelial cells",
+  stromal_cluster = "Fibroblast cells"
+  )
 ```
 
 This step takes long time, in this vignette we read in our deconvoluted result.
@@ -299,11 +284,13 @@ DeconPieplot(
   pie_scale = 0.4,
   scatterpie_alpha = 0.8,
   border_color = "grey"
-)
+  )
 
-DeconBarplot(DeconData = DeconData,
-             TumorST = TumorST,
-             plot_col = plot_col)
+DeconBarplot(
+  DeconData = DeconData,
+  TumorST = TumorST,
+  plot_col = plot_col
+  )
 ```
 
 ```{r echo=FALSE}
@@ -369,7 +356,8 @@ DeconData <- DeconData[DeconData$cell_ID %in% rownames(TumorST@meta.data), ]
       cols = plot_col,
       color = border_color,
       alpha = scatterpie_alpha,
-      pie_scale = pie_scale
+      pie_scale = pie_scale,
+      lwd = 0.1
     ) +
     ggplot2::scale_y_reverse() +
     ggplot2::ylim(nrow(img), 0) +

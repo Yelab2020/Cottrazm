@@ -49,9 +49,11 @@ library(org.Hs.eg.db)
 #  Sample = "CRC1"
 #  OutDir = paste(getwd(),"/",Sample,"/",sep = "")
 #  TumorST <-
-#    STPreProcess(InDir = InDir,
-#                 OutDir = OutDir,
-#                 Sample = Sample)
+#    STPreProcess(
+#      InDir = InDir,
+#      OutDir = OutDir,
+#      Sample = Sample
+#      )
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  print('STModiCluster')
@@ -68,33 +70,22 @@ library(org.Hs.eg.db)
 ## ----eval = FALSE-------------------------------------------------------------
 #  print('STCNV' )
 #  STInferCNV <-
-#    STCNV(TumorST = TumorST,
-#          OutDir  = OutDir,
-#          assay = "Spatial")
+#    STCNV(
+#      TumorST = TumorST,
+#      OutDir  = OutDir,
+#      assay = "Spatial"
+#      )
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  print('STCNVScore')
 #  
-#  infercnv.dend <-
-#    read.tree(
-#      file =
-#        system.file("inst/extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm")
-#    )
-#  
-#  cnv_table <-
-#    read.table(
-#      file =
-#        system.file("inst/extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm")
-#    )
-#  
 #  TumorST <-
 #    STCNVScore(
-#      infercnv.dend = infercnv.dend,
-#      cnv_table = cnv_table,
 #      TumorST = TumorST,
+#      assay = "Spatial",
 #      Sample = Sample,
 #      OutDir = OutDir
-#    )
+#      )
 
 ## ----eval = FALSE-------------------------------------------------------------
 #  TumorSTn <-
@@ -186,15 +177,17 @@ Seurat::SpatialDimPlot(TumorST,group.by = 'Location',cols = c("#CB181D", "#1f78b
 #                    enrich_matrix = enrich_matrix)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  DeconData <- SpatialDecon(enrich_matrix = enrich_matrix,
-#                           enrich_result = enrich_result,
-#                           filter_expr = filter_expr,
-#                           filter_sig = filter_sig,
-#                           clustermarkers_list = clustermarkers_list,
-#                           meta_data = meta_data,
-#                           malignant_cluster = "Malignant epithelial cells",
-#                           tissue_cluster = "Epithelial cells",
-#                           stromal_cluster = "Fibroblast cells")
+#  DeconData <- SpatialDecon(
+#    enrich_matrix = enrich_matrix,
+#    enrich_result = enrich_result,
+#    filter_expr = filter_expr,
+#    filter_sig = filter_sig,
+#    clustermarkers_list = clustermarkers_list,
+#    meta_data = meta_data,
+#    malignant_cluster = "Malignant epithelial cells",
+#    tissue_cluster = "Epithelial cells",
+#    stromal_cluster = "Fibroblast cells"
+#    )
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  DeconData <- openxlsx::read.xlsx(system.file("inst/extdata/DeconData.xlsx",package = "Cottrazm"))
@@ -215,11 +208,13 @@ print(head(DeconData))
 #    pie_scale = 0.4,
 #    scatterpie_alpha = 0.8,
 #    border_color = "grey"
-#  )
+#    )
 #  
-#  DeconBarplot(DeconData = DeconData,
-#               TumorST = TumorST,
-#               plot_col = plot_col)
+#  DeconBarplot(
+#    DeconData = DeconData,
+#    TumorST = TumorST,
+#    plot_col = plot_col
+#    )
 
 ## ----echo=FALSE---------------------------------------------------------------
 plot_col <- colnames(DeconData)[2:ncol(DeconData)]
@@ -284,7 +279,8 @@ DeconData <- DeconData[DeconData$cell_ID %in% rownames(TumorST@meta.data), ]
       cols = plot_col,
       color = border_color,
       alpha = scatterpie_alpha,
-      pie_scale = pie_scale
+      pie_scale = pie_scale,
+      lwd = 0.1
     ) +
     ggplot2::scale_y_reverse() +
     ggplot2::ylim(nrow(img), 0) +
