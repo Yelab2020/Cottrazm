@@ -54,6 +54,8 @@ STCNVScore <- function(TumorST = TumorST,
                          cnv_label = c(1:8))
 
   cell_groupings$cnv_label <- class_df$cnv_label[match(cell_groupings$class,class_df$cell_groups)]
+  rownames(cell_groupings) <- NULL
+
   infercnv.label <- cell_groupings[,c("cell","cnv_label")] %>% tibble::column_to_rownames(.,var = 'cell')
 
   infercnv.label <- rbind(infercnv.label, data.frame(
