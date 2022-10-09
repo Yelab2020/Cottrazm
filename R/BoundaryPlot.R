@@ -1,11 +1,9 @@
 # source('R/boundary_define_settings.R')
 # source('R/boundary_define_utility.R')
-# infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
-# cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"))
 # TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
 # Sample = "CRC1"
 # OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
-# TumorST <- STCNVScore(infercnv.dend = infercnv.dend,cnv_table = cnv_table,TumorST = TumorST,OutDir = OutDir, Sample = Sample)
+# TumorST <- STCNVScore(TumorST = TumorST, assay = "Spatial", OutDir = OutDir, Sample = Sample)
 # MalLabel = c(1,2)
 # TumorSTn <- BoundaryDefine(TumorST = TumorST, MalLabel = MalLabel, OutDir = OutDir, Sample = Sample)
 
@@ -25,10 +23,8 @@
 #'
 #' Sample <- "CRC1"
 #' OutDir <- "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
-#' infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt", package = "Cottrazm"))
-#' cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt", package = "Cottrazm"))
 #' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
-#' TumorST <- STCNVScore(infercnv.dend = infercnv.dend, cnv_table = cnv_table, TumorST = TumorST, OutDir = OutDir, Sample = Sample)
+#' TumorST <- STCNVScore(TumorST = TumorST, assay = "Spatial", OutDir = OutDir, Sample = Sample)
 #' MalLabel <- c(1, 2)
 #' TumorSTn <- BoundaryDefine(TumorST = TumorST, MalLabel = MalLabel, OutDir = OutDir, Sample = Sample)
 #' TumorST <- BoundaryPlot(TumorSTn = TumorSTn, TumorST = TumorST, OutDir = OutDir, Sample = Sample)
@@ -75,7 +71,8 @@ BoundaryPlot <- function(TumorSTn = TumorSTn,
   TumorST_DefineColors$colors <- as.character(TumorST_DefineColors$colors)
 
   pdf(paste(OutDir, Sample, "_BoundaryDefine.pdf", sep = ""), width = 7, height = 7)
-  p <- SpatialDimPlot(TumorST, group.by = "Location", cols = TumorST_DefineColors$colors)
+  p <- SpatialDimPlot(TumorST, group.by = "Location", cols = TumorST_DefineColors$colors) +
+    scale_fill_manual(values = TumorST_DefineColors$colors )
   print(p)
   dev.off()
 

@@ -1,44 +1,43 @@
 # source('R/boundary_define_settings.R')
-# infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",package = "Cottrazm"))
-# cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt",package = "Cottrazm"))
 # TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
 # OutDir = "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
+# assay = "Spatial"
 # Sample = "CRC1"
 
 #' Title Score ST data with infercnv result
 #'
 #' add cnv score to ST Seurat object
 #'
-#' @param infercnv.dend InferCNV random tree sub-clustered result of ST data
-#' @param cnv_table CNV scores of observations in ST data
 #' @param TumorST A Seurat object with morphological adjusted expression matrix and determined clusters
 #' @param OutDir Path to file save figures and processed data
 #' @param Sample Name of your sample
+#' @param assay Name of assay uesed in infercnv
 #'
 #' @return A Seurat object of ST data with CNV sub-clusters and CNV scores
 #' @export
 #'
 #' @examples
-#' infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt", package = "Cottrazm"))
-#' cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt", package = "Cottrazm"))
 #' TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
 #' OutDir <- "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 #' Sample <- "CRC1"
-#' TumorST <- STCNVScore(infercnv.dend = infercnv.dend, cnv_table = cnv_table, TumorST = TumorST, OutDir = OutDir, Sample = Sample)
+#' assay = "Spatial"
+#' TumorST <- STCNVScore(TumorST = TumorST, assay = assay, OutDir = OutDir, Sample = Sample)
 #'
-STCNVScore <- function(infercnv.dend = infercnv.dend,
-                       cnv_table = cnv_table,
-                       TumorST = TumorST,
+STCNVScore <- function(TumorST = TumorST,
+                       assay = c("Saptial","Morph"),
                        OutDir = NULL,
                        Sample = Sample) {
+
   if (is.null(OutDir) == TRUE) {
     OutDir <- paste(getwd(), "/", Sample, "/", sep = "")
     dir.create(OutDir)
   }
 
-  ## CNV Cluster
-  infercnv.label <- dendextend::cutree(infercnv.dend, k = 8)
-  infercnv.label <- as.data.frame(infercnv.label)
+  cnv_outdir = paste(OutDir, "InferCNV/output_", assay, sep = "")
+
+  ## CNV Label
+  cell_groupings <- read.table(paste(cnv_outdir,"/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.cell_groupings",sep = ""),header = T)
+  cell_groupings$class <- gsub("all_observations.all_observations.","",cell_groupings$cell_group_name)
 
   # set cnv score of normal cluster == 0
   NormalCluster <- levels(TumorST$seurat_clusters)[order(unlist(lapply(
@@ -49,12 +48,20 @@ STCNVScore <- function(infercnv.dend = infercnv.dend,
     function(test) mean(test$NormalScore)
   )), decreasing = T)[1]]
 
+  cell_groupings <- cell_groupings[!cell_groupings$cell %in% rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),]
+
+  class_df <- data.frame(cell_groups = rownames(as.data.frame.array(table(cell_groupings$class))),
+                         cnv_label = c(1:8))
+
+  cell_groupings$cnv_label <- class_df$cnv_label[match(cell_groupings$class,class_df$cell_groups)]
+  infercnv.label <- cell_groupings[,c("cell","cnv_label")] %>% tibble::column_to_rownames(.,var = 'cell')
+
   infercnv.label <- rbind(infercnv.label, data.frame(
     row.names = rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),
-    infercnv.label = rep("Normal", length(rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,])))
+    cnv_label = rep("Normal", length(rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,])))
   ))
 
-  TumorST@meta.data$CNVLabel <- infercnv.label$infercnv.label[match(rownames(TumorST@meta.data), rownames(infercnv.label))]
+  TumorST@meta.data$CNVLabel <- infercnv.label$cnv_label[match(rownames(TumorST@meta.data), rownames(infercnv.label))]
 
   .cluster_cols <- c(
     "#DC050C", "#FB8072", "#1965B0", "#7BAFDE", "#882E72",
@@ -65,31 +72,41 @@ STCNVScore <- function(infercnv.dend = infercnv.dend,
     "#aeae5c", "#1e90ff", "#00bfff", "#56ff0d", "#ffff00"
   )
 
+  ## Plot CNV Label
   pdf(paste(OutDir, Sample, "_cnv_label.pdf", sep = ""), width = 7, height = 7)
-  p <- SpatialDimPlot(TumorST, group.by = "CNVLabel", cols = .cluster_cols, pt.size.factor = 1, alpha = 0.6)
+  p <- SpatialDimPlot(TumorST, group.by = "CNVLabel", cols = .cluster_cols, pt.size.factor = 1, alpha = 0.6) +
+    scale_fill_manual(values = .cluster_cols)
   print(p)
   dev.off()
 
   pdf(paste(OutDir, Sample, "_reduction_cnvlabel.pdf", sep = ""), width = 7, height = 7)
-  p <- DimPlot(TumorST, group.by = "CNVLabel", cols = .cluster_cols)
+  p <- DimPlot(TumorST, group.by = "CNVLabel", cols = .cluster_cols) +
+    scale_fill_manual(values = .cluster_cols)
   print(p)
   dev.off()
 
-  # CNV Score
-  colnames(cnv_table) <- gsub("\\.1", "-1", colnames(cnv_table))
-  # Replicate the table
-  cnv_score_table <- as.matrix(cnv_table)
-  cnv_score_table_pts <- abs(cnv_score_table - 3)
+  ## CNV Score
+  cell_gene_state <- read.table(paste(cnv_outdir,'/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.pred_cnv_genes.dat',sep = ""),header = T)
+  cell_gene_state$class <- gsub("all_observations.all_observations.","",cell_gene_state$cell_group_name)
+  cell_gene_state$cnv_label <- class_df$cnv_label[match(cell_gene_state$class,class_df$cell_groups)]
 
-  # Scores are stored in “cnv_score_table_pts”. Use colSums to add up scores for each cell and store as vector
-  cell_scores_CNV <- as.data.frame(colSums(cnv_score_table_pts))
-  colnames(cell_scores_CNV) <- "cnv_score"
-  cell_scores_CNV$CNVLabel <- TumorST@meta.data$CNVLabel[match(rownames(cell_scores_CNV), rownames(TumorST@meta.data))]
+  cnv_label_score <- data.frame(cnv_label = unique(cell_gene_state$cnv_label),
+                                cnv_score = unlist(lapply(unique(cell_gene_state$cnv_label),function(label){
 
-  TumorST@meta.data$CNVScores <- cell_scores_CNV$cnv_score[match(rownames(TumorST@meta.data), rownames(cell_scores_CNV))]
+                                  cell_gene_state_sub <- cell_gene_state[cell_gene_state$cnv_label == label,]
+                                  sub_label_score <- sum(abs(cell_gene_state_sub$state-3))
+                                  return(sub_label_score)
 
-  pdf(paste(OutDir, "cnv_observation_vlnplot.pdf", sep = ""), width = 6, height = 4)
-  p <- ggplot(cell_scores_CNV, aes(x = CNVLabel, y = cnv_score, fill = CNVLabel)) +
+                                }))
+  )
+
+  cell_scores_CNV <- rbind(cnv_label_score,data.frame(cnv_label="Normal",cnv_score = 0))
+  TumorST@meta.data$cnv_score <- cell_scores_CNV$cnv_score[match(TumorST@meta.data$CNVLabel,cell_scores_CNV$cnv_label)]
+  cell_scores_CNVA <- TumorST@meta.data[,c("CNVLabel","cnv_score")]
+
+  ##plot cnv score
+  pdf(paste(OutDir,Sample, "_cnv_observation_vlnplot.pdf", sep = ""), width = 6, height = 4)
+  p <- ggplot(cell_scores_CNVA, aes(x = CNVLabel, y = cnv_score, fill = CNVLabel)) +
     geom_violin(alpha = 0.5) +
     geom_boxplot(stat = "boxplot", alpha = 1, width = .5, outlier.size = 0.5) +
     labs(y = "CNV_scores") +

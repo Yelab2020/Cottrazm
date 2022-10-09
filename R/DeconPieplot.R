@@ -87,7 +87,8 @@ DeconPieplot <- function(DeconData = DeconData,
       cols = plot_col,
       color = border_color,
       alpha = scatterpie_alpha,
-      pie_scale = pie_scale
+      pie_scale = pie_scale,
+      lwd=0.1
     ) +
     ggplot2::scale_y_reverse() +
     ggplot2::ylim(nrow(img), 0) +

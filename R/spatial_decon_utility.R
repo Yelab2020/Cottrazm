@@ -29,7 +29,11 @@ solve_OLS_internal <- function(S,
   d <- t(S) %*% B
   A <- cbind(diag(dim(S)[2]))
   bzero <- c(rep(0, dim(S)[2]))
-  solution <- quadprog::solve.QP(D, d, A, bzero)$solution
+  sc <- norm(D, "2")
+
+  pd_D_mat <- nearPD(D / sc)
+  solution <- quadprog::solve.QP(as.matrix(pd_D_mat$mat), d / sc, A, bzero)$solution
+  #solution <- quadprog::solve.QP(D, d, A, bzero)$solution
   names(solution) <- colnames(S)
   return(solution)
 }
@@ -114,7 +118,10 @@ solve_dampened_WLSj <- function(S,
   A <- cbind(diag(dim(S)[2]))
   bzero <- c(rep(0, dim(S)[2]))
   sc <- norm(D, "2")
-  solution <- quadprog::solve.QP(D / sc, d / sc, A, bzero)$solution
+
+  pd_D_mat <- nearPD(D / sc)
+  solution <- quadprog::solve.QP(as.matrix(pd_D_mat$mat), d / sc, A, bzero)$solution
+  #solution <- quadprog::solve.QP(D / sc, d / sc, A, bzero)$solution
   names(solution) <- colnames(S)
   return(solution)
 }

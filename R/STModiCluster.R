@@ -79,12 +79,15 @@ STModiCluster <- function(InDir = InDir,
     "#aeae5c", "#1e90ff", "#00bfff", "#56ff0d", "#ffff00"
   )
   pdf(paste(OutDir, Sample, "_Spatial_SeuratCluster.pdf", sep = ""), width = 7, height = 7)
-  p <- SpatialDimPlot(TumorST, group.by = "seurat_clusters", cols = .cluster_cols, pt.size.factor = 1, alpha = 0.8) + labs(title = paste("Resolution = ", res, sep = ""))
+  p <- SpatialDimPlot(TumorST, group.by = "seurat_clusters", cols = .cluster_cols, pt.size.factor = 1, alpha = 0.8) +
+    scale_fill_manual(values = .cluster_cols)+
+    labs(title = paste("Resolution = ", res, sep = ""))
   print(p)
   dev.off()
 
   pdf(paste(OutDir, Sample, "_UMAP_SeuratCluster.pdf", sep = ""), width = 7, height = 7)
-  p <- DimPlot(TumorST, group.by = "seurat_clusters", cols = .cluster_cols) + labs(title = paste("Resolution = ", res, sep = ""))
+  p <- DimPlot(TumorST, group.by = "seurat_clusters", cols = .cluster_cols) + labs(title = paste("Resolution = ", res, sep = "")) +
+    scale_fill_manual(values = .cluster_cols)
   print(p)
   dev.off()
 
