@@ -5,19 +5,16 @@
 \title{Title Score ST data with infercnv result}
 \usage{
 STCNVScore(
-  infercnv.dend = infercnv.dend,
-  cnv_table = cnv_table,
   TumorST = TumorST,
+  assay = c("Saptial", "Morph"),
   OutDir = NULL,
   Sample = Sample
 )
 }
 \arguments{
-\item{infercnv.dend}{InferCNV random tree sub-clustered result of ST data}
-
-\item{cnv_table}{CNV scores of observations in ST data}
-
 \item{TumorST}{A Seurat object with morphological adjusted expression matrix and determined clusters}
+
+\item{assay}{Name of assay uesed in infercnv}
 
 \item{OutDir}{Path to file save figures and processed data}
 
@@ -30,11 +27,10 @@ A Seurat object of ST data with CNV sub-clusters and CNV scores
 add cnv score to ST Seurat object
 }
 \examples{
-infercnv.dend <- read.tree(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt", package = "Cottrazm"))
-cnv_table <- read.table(file = system.file("extdata/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt", package = "Cottrazm"))
 TumorST <- readr::read_rds("YourPath/TumorBoundary/1.BoundaryDefine/CRC1/TumorSTClustered.rds.gz")
 OutDir <- "YourPath/TumorBoundary/Fig/1.BoundaryDefine/CRC1/"
 Sample <- "CRC1"
-TumorST <- STCNVScore(infercnv.dend = infercnv.dend, cnv_table = cnv_table, TumorST = TumorST, OutDir = OutDir, Sample = Sample)
+assay = "Spatial"
+TumorST <- STCNVScore(TumorST = TumorST, assay = assay, OutDir = OutDir, Sample = Sample)
 
 }
