@@ -51,7 +51,7 @@ STCNVScore <- function(TumorST = TumorST,
   cell_groupings <- cell_groupings[!cell_groupings$cell %in% rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),]
 
   class_df <- data.frame(cell_groups = rownames(as.data.frame.array(table(cell_groupings$class))),
-                         cnv_label = c(1:8))
+                         cnv_label = c(1:8)[1:length(rownames(as.data.frame.array(table(cell_groupings$class))))])
 
   cell_groupings$cnv_label <- class_df$cnv_label[match(cell_groupings$class,class_df$cell_groups)]
   rownames(cell_groupings) <- NULL
