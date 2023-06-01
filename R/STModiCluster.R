@@ -47,6 +47,8 @@ STModiCluster <- function(InDir = InDir,
   if (is(aa_try, "try-error")) {
     library(Matrix)
     Adjusted_expr_mtx <- Matrix::readMM(paste(OutDir, Sample, "_raw_SME_normalizeA.mtx", sep = ""))
+    rownames(Adjusted_expr_mtx) <- colnames(TumorST@assays$Spatial@counts)
+    colnames(Adjusted_expr_mtx) <- rownames(TumorST@assays$Spatial@counts)
   } else {
     rownames(Adjusted_expr_mtx) <- colnames(TumorST@assays$Spatial@counts)
     colnames(Adjusted_expr_mtx) <- rownames(TumorST@assays$Spatial@counts)
