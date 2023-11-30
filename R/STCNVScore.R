@@ -36,32 +36,38 @@ STCNVScore <- function(TumorST = TumorST,
   cnv_outdir = paste(OutDir, "InferCNV/output_", assay, sep = "")
 
   ## CNV Label
-  cell_groupings <- read.table(paste(cnv_outdir,"/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.cell_groupings",sep = ""),header = T)
-  cell_groupings$class <- gsub("all_observations.all_observations.","",cell_groupings$cell_group_name)
+  #cell_groupings <- read.table(paste(cnv_outdir,"/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.cell_groupings",sep = ""),header = T)
+  cell_groupings <- read.tree(file = paste(cnv_outdir,"/infercnv.17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations_dendrogram.txt",sep = ""))
+  infercnv.label <- dendextend::cutree(cell_groupings,k=8)
+  infercnv.label <- as.data.frame(infercnv.label)
+  infercnv.label <- rbind(infercnv.label,data.frame(row.names = rownames(TumorST@meta.data)[!rownames(TumorST@meta.data) %in% infercnv.label$row.names],
+                                                    infercnv.label=rep("Normal",length(rownames(TumorST@meta.data)[!rownames(TumorST@meta.data) %in% infercnv.label$row.names]))))
+  
+  #cell_groupings$class <- gsub("all_observations.all_observations.","",cell_groupings$cell_group_name)
 
-  # set cnv score of normal cluster == 0
-  NormalCluster <- levels(TumorST$seurat_clusters)[order(unlist(lapply(
-    split(
-      TumorST@meta.data[, c("seurat_clusters", "NormalScore")],
-      TumorST@meta.data[, c("seurat_clusters", "NormalScore")]$seurat_clusters
-    ),
-    function(test) mean(test$NormalScore)
-  )), decreasing = T)[1]]
+  ## set cnv score of normal cluster == 0
+  #NormalCluster <- levels(TumorST$seurat_clusters)[order(unlist(lapply(
+  #  split(
+  #    TumorST@meta.data[, c("seurat_clusters", "NormalScore")],
+  #    TumorST@meta.data[, c("seurat_clusters", "NormalScore")]$seurat_clusters
+  #  ),
+  #  function(test) mean(test$NormalScore)
+  #)), decreasing = T)[1]]
 
-  cell_groupings <- cell_groupings[!cell_groupings$cell %in% rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),]
+  #cell_groupings <- cell_groupings[!cell_groupings$cell %in% rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),]
 
-  class_df <- data.frame(cell_groups = rownames(as.data.frame.array(table(cell_groupings$class))),
+  #class_df <- data.frame(cell_groups = rownames(as.data.frame.array(table(cell_groupings$class))),
                          cnv_label = c(1:8)[1:length(rownames(as.data.frame.array(table(cell_groupings$class))))])
 
-  cell_groupings$cnv_label <- class_df$cnv_label[match(cell_groupings$class,class_df$cell_groups)]
-  rownames(cell_groupings) <- NULL
+  #cell_groupings$cnv_label <- class_df$cnv_label[match(cell_groupings$class,class_df$cell_groups)]
+  #rownames(cell_groupings) <- NULL
 
-  infercnv.label <- cell_groupings[,c("cell","cnv_label")] %>% tibble::column_to_rownames(.,var = 'cell')
+  #infercnv.label <- cell_groupings[,c("cell","cnv_label")] %>% tibble::column_to_rownames(.,var = 'cell')
 
-  infercnv.label <- rbind(infercnv.label, data.frame(
-    row.names = rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),
-    cnv_label = rep("Normal", length(rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,])))
-  ))
+  #infercnv.label <- rbind(infercnv.label, data.frame(
+  #  row.names = rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,]),
+  #  cnv_label = rep("Normal", length(rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,])))
+  #))
 
   TumorST@meta.data$CNVLabel <- infercnv.label$cnv_label[match(rownames(TumorST@meta.data), rownames(infercnv.label))]
 
@@ -88,22 +94,34 @@ STCNVScore <- function(TumorST = TumorST,
   dev.off()
 
   ## CNV Score
-  cell_gene_state <- read.table(paste(cnv_outdir,'/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.pred_cnv_genes.dat',sep = ""),header = T)
-  cell_gene_state$class <- gsub("all_observations.all_observations.","",cell_gene_state$cell_group_name)
-  cell_gene_state$cnv_label <- class_df$cnv_label[match(cell_gene_state$class,class_df$cell_groups)]
+  #cell_gene_state <- read.table(paste(cnv_outdir,'/17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.pred_cnv_genes.dat',sep = ""),header = T)
+  cnv_table <- read.table(paste(cnv_outdir,'/infercnv.17_HMM_predHMMi6.rand_trees.hmm_mode-subclusters.observations.txt',sep = ""),header = T)
 
-  cnv_label_score <- data.frame(cnv_label = unique(cell_gene_state$cnv_label),
-                                cnv_score = unlist(lapply(unique(cell_gene_state$cnv_label),function(label){
+  #cell_gene_state$class <- gsub("all_observations.all_observations.","",cell_gene_state$cell_group_name)
+  #cell_gene_state$cnv_label <- class_df$cnv_label[match(cell_gene_state$class,class_df$cell_groups)]
 
-                                  cell_gene_state_sub <- cell_gene_state[cell_gene_state$cnv_label == label,]
-                                  sub_label_score <- sum(abs(cell_gene_state_sub$state-3))
-                                  return(sub_label_score)
+  #cnv_label_score <- data.frame(cnv_label = unique(cell_gene_state$cnv_label),
+  #                              cnv_score = unlist(lapply(unique(cell_gene_state$cnv_label),function(label){
 
-                                }))
-  )
+  #                                cell_gene_state_sub <- cell_gene_state[cell_gene_state$cnv_label == label,]
+  #                                sub_label_score <- sum(abs(cell_gene_state_sub$state-3))
+  #                                return(sub_label_score)
 
-  cell_scores_CNV <- rbind(cnv_label_score,data.frame(cnv_label="Normal",cnv_score = 0))
-  TumorST@meta.data$cnv_score <- cell_scores_CNV$cnv_score[match(TumorST@meta.data$CNVLabel,cell_scores_CNV$cnv_label)]
+  #                              }))
+  #)
+
+  #cell_scores_CNV <- rbind(cnv_label_score,data.frame(cnv_label="Normal",cnv_score = 0))
+  #TumorST@meta.data$cnv_score <- cell_scores_CNV$cnv_score[match(TumorST@meta.data$CNVLabel,cell_scores_CNV$cnv_label)]
+  cnv_score_table <- as.matrix(cnv_table)
+
+  cnv_score_tableA <- abs(cnv_score_table-3)
+
+  cell_scores_CNV <- as.data.frame(colSums(cnv_score_tableA)) %>% set_colnames(.,c('cnv_score'))
+  rownames(cell_scores_CNV) <- gsub("\\.",'-',rownames(cell_scores_CNV))
+
+  TumorST@meta.data$cnv_score <- cell_scores_CNV$cnv_score[match(rownames(TumorST@meta.data),
+                                                                          rownames(cell_scores_CNV))]
+  TumorST@meta.data$cnv_score <- ifelse(TumorST@meta.data$CNVLabel == "Normal",0,TumorST@meta.data$cnv_score)
   cell_scores_CNVA <- TumorST@meta.data[,c("CNVLabel","cnv_score")]
 
   ##plot cnv score

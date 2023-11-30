@@ -122,6 +122,11 @@ TumorST <-
 ### 3.1.3 Run InferCNV on ST data
 We firstly use clusters with the highest score of lymphocytes' features as reference, because the CNV copy number of lymphocytes were relatively stable. Then we run InferCNV on ST data. You can select non-adjusted gene expression assay when tissue was properly permeabilized otherwise we recommend use morphological adjusted gene expression assay. When running InferCNV, the parameter "analysis_mode" was set as random_trees, the observation spots will be divided to 8 clusters, it will take longer time, but malignant and non-malignant spots will be better separated.
 
+We strongly recommended conduct this step as R script, before run the script, please remember to set:
+```{bash}
+# unlimit -s 102400
+```
+
 ```{r eval = FALSE}
 print('STCNV' )
 STInferCNV <-

@@ -71,14 +71,14 @@ STCNV <- function(TumorST = TumorST,
     tumor_subcluster_partition_method = "random_trees",
     HMM_type = "i6",
     BayesMaxPNormal = 0,
-    num_threads = 30,
-    plot_probabilities = F,
-    save_rds = F,
-    save_final_rds = F,
-    no_plot = T,
-    output_format = NA,
-    useRaster = T,
-    up_to_step = 17
+    num_threads = 30
+    #plot_probabilities = F,
+    #save_rds = F,
+    #save_final_rds = F,
+    #no_plot = T,
+    #output_format = NA,
+    #useRaster = T,
+    #up_to_step = 17
   )
   return(infercnv_obj)
 }
