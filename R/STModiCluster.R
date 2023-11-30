@@ -55,7 +55,7 @@ STModiCluster <- function(InDir = InDir,
   }
 
   Adjusted_expr_mtxF <- t(as.matrix(Adjusted_expr_mtx))
-  MorphMatirxSeurat <- CreateSeuratObject(counts = as.matrix(Adjusted_expr_mtxF))
+  MorphMatirxSeurat <- CreateSeuratObject(counts = as(Adjusted_expr_mtxF,'sparseMatrix'))
 
   # Add morph feature as assay to TumorST
   MorphMatirxSeurat <- subset(MorphMatirxSeurat, cells = rownames(TumorST@meta.data))
