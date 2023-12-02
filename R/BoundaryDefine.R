@@ -51,11 +51,14 @@ BoundaryDefine <- function(TumorST = TumorST,
     MalLabel <-
       order(unlist(lapply(
         split(
-          TumorST@meta.data[, c("CNVLabel", "CNVScores")],
-          TumorST@meta.data[, c("CNVLabel", "CNVScores")]$CNVLabel
+          #TumorST@meta.data[, c("CNVLabel", "CNVScores")],
+          #TumorST@meta.data[, c("CNVLabel", "CNVScores")]$CNVLabel
+          TumorST@meta.data[, c("CNVLabel", "cnv_score")],
+          TumorST@meta.data[, c("CNVLabel", "cnv_score")]$CNVLabel
         ),
         function(test) {
-          median(test$CNVScores)
+          #median(test$CNVScores)
+          median(test$cnv_scores)
         }
       )), decreasing = T)[1:2]
   }
