@@ -69,7 +69,7 @@ STCNVScore <- function(TumorST = TumorST,
   #  cnv_label = rep("Normal", length(rownames(TumorST@meta.data[TumorST@meta.data$seurat_clusters == NormalCluster,])))
   #))
 
-  TumorST@meta.data$CNVLabel <- infercnv.label$cnv_label[match(rownames(TumorST@meta.data), rownames(infercnv.label))]
+  TumorST@meta.data$CNVLabel <- infercnv.label$infercnv.label[match(rownames(TumorST@meta.data), rownames(infercnv.label))]
 
   .cluster_cols <- c(
     "#DC050C", "#FB8072", "#1965B0", "#7BAFDE", "#882E72",
