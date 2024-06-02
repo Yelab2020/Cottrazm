@@ -13,6 +13,7 @@
 #' @param OutDir Path to file save infercnv results
 #' @param assay The name of assay used in InferCNV (Morph: Morphological adjusted gene expression, Spatial: gene expression)
 #' @param Sample Name of your sample
+#' @param num_threads The number of cores used (default 30)
 #'
 #' @return A large CNV object
 #' @export
@@ -28,7 +29,8 @@
 STCNV <- function(TumorST = TumorST,
                   assay = c("Morph", "Spatial"),
                   OutDir = NULL,
-                  Sample = Sample) {
+                  Sample = Sample,
+                  num_threads = 30) {
   if (is.null(OutDir) == TRUE) {
     OutDir <- paste(getwd(), "/", Sample, "/", sep = "")
     dir.create(OutDir)
@@ -71,7 +73,7 @@ STCNV <- function(TumorST = TumorST,
     tumor_subcluster_partition_method = "random_trees",
     HMM_type = "i6",
     BayesMaxPNormal = 0,
-    num_threads = 30
+    num_threads = num_threads
     #plot_probabilities = F,
     #save_rds = F,
     #save_final_rds = F,
