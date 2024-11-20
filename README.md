@@ -17,6 +17,11 @@ if (!requireNamespace("devtools", quietly = TRUE))
 
 devtools::install_github("Yelab2020/Cottrazm")
 ```
+You can also download Cottrazm through docker. Make sure you have docker installed.
+
+```
+docker pull skye12138/cottrazm:latest
+```
 
 ## Usage
 
