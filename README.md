@@ -27,6 +27,7 @@ docker pull skye12138/cottrazm:latest
 
 For usage of Cottrazm, please refer to the [vignette](doc/my-vignette.pdf)
 
-How to cite Cottrazm
+## How to cite Cottrazm
+
 Please cite the following manuscript:
 Xun, Z., Ding, X., Zhang, Y. et al. Reconstruction of the tumor spatial microenvironment along the malignant-boundary-nonmalignant axis. Nat Commun 14, 933 (2023). https://doi.org/10.1038/s41467-023-36560-7
